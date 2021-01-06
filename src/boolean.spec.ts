@@ -1,5 +1,5 @@
 import {
-  and, f, nand, nor, not, or, t, without, xor,
+  and, f, nand, nor, not, or, t, without, xor, xor2, xor3,
 } from './boolean';
 
 test('t', () => {
@@ -59,9 +59,15 @@ test('xor', () => {
   expect(xor(false)(false)).toBe(false);
 });
 
-test('xor', () => {
-  expect(xor(true)(true)).toBe(false);
-  expect(xor(true)(false)).toBe(true);
-  expect(xor(false)(true)).toBe(true);
-  expect(xor(false)(false)).toBe(false);
+test('xor2', () => {
+  expect(xor2(true)(true)).toBe(false);
+  expect(xor2(true)(false)).toBe(true);
+  expect(xor2(false)(true)).toBe(true);
+  expect(xor2(false)(false)).toBe(false);
+});
+test('xor3', () => {
+  expect(xor3(true)(true)).toBe(false);
+  expect(xor3(true)(false)).toBe(true);
+  expect(xor3(false)(true)).toBe(true);
+  expect(xor3(false)(false)).toBe(false);
 });
