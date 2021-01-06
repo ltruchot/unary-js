@@ -19,6 +19,7 @@ module.exports = {
   rules: {
     'max-params': ['error', 1],
     'no-unused-vars': 'off',
+    'import/prefer-default-export': 'off',
     'import/extensions': [
       'error',
       'ignorePackages',
