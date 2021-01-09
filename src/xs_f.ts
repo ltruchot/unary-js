@@ -15,3 +15,6 @@ export const reduceIndexedAndKeep: FnReduceIndexedAndKeep = (i) => (acc) => (f) 
 )(identity)(() => reduceIndexedAndKeep(inc(i))(f(acc)(head(xs))(i))(f)(tail(xs)))(acc);
 
 export const reduceIndexed: FnReduceIndexed = reduceIndexedAndKeep(0);
+
+type FnMap = (f: (x: any) => any) => (xs: any[]) => any[];
+export const map: FnMap = (f) => (xs) => reduce([])((acc) => (cur) => [...acc, f(cur)])(xs);
