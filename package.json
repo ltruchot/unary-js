@@ -1,16 +1,20 @@
 {
   "name": "unary-js",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Only unary function, for the sake of FP in JS.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ltruchot/unary-js"
+  },
   "scripts": {
     "build": "tsc",
     "start": "tsc ./src/index.ts --outDir ./dist --watch",
     "test": "jest --watch"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Loïc TRUCHOT",
+  "license": "CC-BY-NC-4.0",
   "devDependencies": {
     "@types/jest": "26.0.17",
     "@typescript-eslint/eslint-plugin": "4.9.1",

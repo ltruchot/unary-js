@@ -6,6 +6,9 @@ export const equals: FnGeneric2<any> = (a) => (b) => b === a;
 export const ifElse: FnGeneric4<any> = (
   cond: boolean,
 ) => (f: any) => (g: any) => (a: any) => (cond ? f(a) : g(a));
+export const unless: FnGeneric4<any> = (
+  cond: boolean,
+) => (f: any) => ifElse(cond)(identity)(f);
 
 // helpers
 export const log: FnUnary = (a) => {
