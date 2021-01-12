@@ -17,7 +17,7 @@ This implies that there is no longer any operator or control structure in the la
 
 For example, iterations are always performed by recursion (no for / no while) and so on.  
 It's sadly preventing JS from becoming efficient in intensive iteration with this approach.  
-Even if TCO is part of ES6, only Safari implements it. [SpiderMonkey don't have it, and V8 dropped it](https://github.com/tc39/proposal-ptc-syntax) therefore chrome, node.js and firefox cannot ensure a good execution of this library: do not not use in production !
+Even if [TCO](https://en.wikipedia.org/wiki/Tail_call) is part of ES6, only Safari implements it. [SpiderMonkey don't have it, and V8 dropped it](https://github.com/tc39/proposal-ptc-syntax) therefore chrome, node.js and firefox cannot ensure a good execution of this library: do not not use in production !
 
 ## But why ?
 
