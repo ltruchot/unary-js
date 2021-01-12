@@ -1,29 +1,27 @@
 # Unary JavaScript
 
-Only unary function, for the good of FP in JS.
+Only unary functions, for the glory of Functional Programming in JS.
 
-⚠️DO NOT USE IN PROD⚠️
+⚠️ DO NOT USE IN PROD️ ⚠️
 
 ## Description
 
-Unary JS is a pedagocical attempt to demonstrate functional programming concept in JavaScript.
-The idea is to stick to **pure unary functions** to do any kind of computation.
+Unary JS is an educational attempt to demonstrate the concepts of Functional Programming (FP) in JavaScript.
+The idea is to stick to **pure unary functions** to do any kind of calculation.
 
-This implies there is no more operator or control structure in the langage, 
-but only first class functions, composing and combining.
+This implies that there is no longer any operator or control structure in the language, but only first-class functions, to compose and combine.
 
-For example, iterations are always made by recursion and so on.
-But a big problem prevent JS to become efficient on intensive iteration with this approach.
-Even in TCO is part of ES6, only Safari implements it. [Neither V8 or SpiderMonkey have TCO anymore)](https://github.com/tc39/proposal-ptc-syntax) so chrome, node.js and safari can't ensure a good execution of this library: don't use it in production
+For example, iterations are always performed by recursion (no for / no while) and so on.
+It's sadly preventing JS from becoming efficient in intensive iteration with this approach.
+Even if TCO is part of ES6, only Safari implements it. [SpiderMonkey don't have it, and V8 dropped it] (https://github.com/tc39/proposal-ptc-syntax) therefore chrome, node.js and firefox cannot ensure a good execution of this library: do not not use in production !
 
-## Utility
+## But why ?
 
-- make a definitive pack of 1000 tiny functions that can handle 99.99% of Computer Science Problem
+- create a definitive pack of 1000 tiny functions that can handle 99.99% of IT problems
 - make JS more LISP-like, Elm-like
-- discover lambda calculus
-- discover category theory
+- discover the lambda calculation
+- discover the theory of categories
+- be playful with FP
 
-
-## Exemple of use
-- [hackerrank problems](https://github.com/ltruchot/unary-hackerrank) tacled with unaryJS
-
+## Example of use
+- [hackerrank problems] (https://github.com/ltruchot/unary-hackerrank) with unaryJS
