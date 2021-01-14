@@ -1,6 +1,6 @@
 import {
   identity, log,
-} from './any';
+} from '../any';
 
 test('identity', () => {
   expect(identity(false)).toBe(false);

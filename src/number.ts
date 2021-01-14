@@ -1,11 +1,19 @@
-import { equals } from './any';
+import { equals, where } from './any';
+import { lt0 } from './number_misc';
 
-type FnNumber1 = (b: number) => number;
-type FnNumber2 = (b: number) => FnNumber1;
+export type FnNumber1 = (b: number) => number;
+export type FnNumber2 = (b: number) => FnNumber1;
+export type FnNumber1ToBoolean = (n: number) => boolean;
+export type FnNumber2ToBoolean = (n: number) => FnNumber1ToBoolean;
+
+export const negate: FnNumber1 = (n) => -n;
+
+export const mod: FnNumber2 = (n1) => (n2) => n2 % n1;
 export const add: FnNumber2 = (n1) => (n2) => n2 + n1;
 export const sub: FnNumber2 = (n1) => (n2) => n2 - n1;
 export const mul: FnNumber2 = (n1) => (n2) => n2 * n1;
-export const inc: FnNumber1 = add(1);
-export const dec: FnNumber1 = sub(1);
 
-export const eq0: FnNumber2 = equals(0);
+export const gt: FnNumber2ToBoolean = (n1) => (n2) => n2 > n1;
+export const gte: FnNumber2ToBoolean = (n1) => (n2) => n2 >= n1;
+export const lt: FnNumber2ToBoolean = (n1) => (n2) => n2 < n1;
+export const lte: FnNumber2ToBoolean = (n1) => (n2) => n2 <= n1;

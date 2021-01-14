@@ -1,6 +1,6 @@
 import {
   and, f, nand, nor, not, or, t, without, xor, xor2, xor3,
-} from './boolean';
+} from '../boolean';
 
 test('t', () => {
   expect(t(true)).toBe(true);

@@ -5,7 +5,7 @@ type FnBool1 = FnGeneric1<boolean>;
 export const t: FnBool1 = (_) => true;
 export const f: FnBool1 = (_) => false;
 
-export const not: FnBool1 = (b) => !b;
+export const not = (b: boolean) => !b;
 
 type FnBool2 = FnGeneric2<boolean>;
 export const and: FnBool2 = (b1) => (b2) => b2 && b1;
