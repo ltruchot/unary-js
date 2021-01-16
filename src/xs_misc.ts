@@ -1,7 +1,7 @@
 import { ifElse, equals } from './any';
 import { compose } from './function';
 import { applyTo } from './misc';
-import { dec } from './number';
+import { dec } from './number_misc';
 
 type FnXsToNumber1 = (xs: readonly any[]) => number;
 export const length: FnXsToNumber1 = (xs) => xs.length;

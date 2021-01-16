@@ -20,13 +20,7 @@ module.exports = {
     'max-params': ['error', 1],
     'no-unused-vars': 'off',
     'import/prefer-default-export': 'off',
-    'import/extensions': [
-      'error',
-      'ignorePackages',
-      {
-        js: 'never',
-        ts: 'never',
-      },
-    ],
+    'import/extensions': 'off',
+    'import/no-unresolved': [2, { commonjs: true, amd: true }],
   },
 };

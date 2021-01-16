@@ -1,5 +1,5 @@
 import { compose } from './function';
-import { inc } from './number';
+import { inc } from './number_misc';
 import { lmap, rmap } from './pair';
 import { head, second } from './xs_misc';
 

@@ -1,6 +1,3 @@
-import { equals, where } from './any';
-import { lt0 } from './number_misc';
-
 export type FnNumber1 = (b: number) => number;
 export type FnNumber2 = (b: number) => FnNumber1;
 export type FnNumber1ToBoolean = (n: number) => boolean;

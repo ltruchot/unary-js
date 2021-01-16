@@ -1,11 +1,11 @@
-module.exports = {
+export default {
   roots: [
     '<rootDir>/src',
   ],
   testMatch: [
-    '**/__test__/*.test.ts',
+    '**/src/**/*.test.js',
   ],
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '.js': 'jest-esm-transformer',
   },
 };
