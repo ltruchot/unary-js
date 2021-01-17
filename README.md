@@ -77,6 +77,8 @@ Arguably, these advantages are theoretical, but practically overwhelming, and on
 Also, we really want to provide a "signature search" tool, like in Haskell or Rust documentations.
 Indeed, if you know that you want to make your array a string, there will be few functions that will do it, and you will find what you are looking quickly, even without knowing the name "join", for example.
 
+In the end, you can consume this library with or without TypeScript, the best of both worlds is available!
+
 ## Why not just Ramda?
 
 Unary-js really looks like Ramda: the functions have the same signature, the same name, you can combine them in the same way (and even better) and they are curried.
