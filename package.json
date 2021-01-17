@@ -1,7 +1,7 @@
 {
   "name": "unary-js",
   "version": "0.0.2",
-  "description": "Only unary function, for the sake of FP in JS.",
+  "description": "Only unary function, for the glory of FP in JS.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
@@ -11,7 +11,8 @@
   "scripts": {
     "build": "tsc",
     "start": "tsc ./src/index.ts --outDir ./dist --watch",
-    "test": "jest --watch"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "author": "Loïc TRUCHOT",
   "license": "CC-BY-NC-4.0",
