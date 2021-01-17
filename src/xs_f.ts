@@ -24,6 +24,11 @@ export const reduceIndexed: FnReduceIndexed = reduceIndexedAndKeep(0);
 type FnMap = (f: (x: any) => any) => (xs: any[]) => any[];
 export const map: FnMap = (f) => (xs) => reduce([])((acc) => (cur) => [...acc, f(cur)])(xs);
 
+type FnZip = (xs: any[]) => FnReduceIndexed;
+export const zip: FnZip = (xs) => reduceIndexed([])(
+  (acc) => (cur) => (i) => [...acc, [cur, xs[i]]],
+);
+
 export const slice = (i1: number) => (i2: number) => reduceIndexed([])(
   (acc) => (cur) => (i) => unless(
     () => or(lt(i1)(i))(gte(i2)(i)),

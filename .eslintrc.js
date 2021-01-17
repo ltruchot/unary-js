@@ -7,6 +7,8 @@ module.exports = {
   },
   extends: [
     'airbnb-base',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:import/typescript',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -18,9 +20,15 @@ module.exports = {
   ],
   rules: {
     'max-params': ['error', 1],
-    'no-unused-vars': 'off',
-    'import/prefer-default-export': 'off',
-    'import/extensions': 'off',
-    'import/no-unresolved': [2, { commonjs: true, amd: true }],
+    '@typescript-eslint/type-annotation-spacing': ['error', { before: false, after: true, overrides: { arrow: { before: true, after: true } } }],
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        ts: 'never',
+      },
+    ],
   },
 };
