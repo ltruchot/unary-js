@@ -16,7 +16,7 @@
     "bootstrap": "lerna bootstrap --hoist --strict",
     "version": "lerna version patch --yes --force-publish=unary-js",
     "npmi:unlock": "rimraf \"./**/package-lock.json\"",
-    "npmi:rm": "rimraf clean && npm cache clean -f && npm cache verify",
+    "npmi:rm": "lerna clean && npm cache clean -f && npm cache verify",
     "npmi:first": "npm run bootstrap && npm run build",
     "npmi:reset": "npm run npmi:unlock && npm run npmi:rm && npm run npmi:first"
   },
