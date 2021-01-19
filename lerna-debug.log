@@ -1,0 +1,27 @@
+0 silly argv {
+0 silly argv   _: [ 'run' ],
+0 silly argv   since: 'develop',
+0 silly argv   lernaVersion: '3.22.1',
+0 silly argv   '$0': 'node_modules\\lerna\\cli.js',
+0 silly argv   script: 'build'
+0 silly argv }
+1 notice cli v3.22.1
+2 verbose rootPath D:\workspace\github-ltruchot\projects\unary-js
+3 notice filter changed since "develop"
+4 silly hasTags
+5 verbose hasTags false
+6 info Looking for changed packages since develop
+7 silly checking diff packages/lib
+8 error Error: Command failed: git diff --name-only develop -- packages/lib
+8 error fatal: bad revision 'develop'
+8 error
+8 error
+8 error     at makeError (D:\workspace\github-ltruchot\projects\unary-js\node_modules\execa\index.js:174:9)
+8 error     at Function.module.exports.sync (D:\workspace\github-ltruchot\projects\unary-js\node_modules\execa\index.js:338:15)
+8 error     at Object.execSync (D:\workspace\github-ltruchot\projects\unary-js\node_modules\@lerna\child-process\index.js:26:16)
+8 error     at diffSinceIn (D:\workspace\github-ltruchot\projects\unary-js\node_modules\@lerna\collect-updates\lib\make-diff-predicate.js:63:23)
+8 error     at hasDiffSinceThatIsntIgnored (D:\workspace\github-ltruchot\projects\unary-js\node_modules\@lerna\collect-updates\lib\make-diff-predicate.js:27:18)
+8 error     at isCandidate (D:\workspace\github-ltruchot\projects\unary-js\node_modules\@lerna\collect-updates\collect-updates.js:88:77)
+8 error     at D:\workspace\github-ltruchot\projects\unary-js\node_modules\@lerna\collect-updates\lib\collect-packages.js:11:9
+8 error     at Map.forEach (<anonymous>)
+8 error     at collectPackages (D:\workspace\github-ltruchot\projects\unary-js\node_modules\@lerna\collect-updates\lib\collect-packages.js:10:12)
