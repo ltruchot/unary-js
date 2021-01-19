@@ -20,6 +20,8 @@ module.exports = {
   ],
   rules: {
     'max-params': ['error', 1],
+    'import/prefer-default-export': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/type-annotation-spacing': ['error', { before: false, after: true, overrides: { arrow: { before: true, after: true } } }],
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'import/extensions': [
