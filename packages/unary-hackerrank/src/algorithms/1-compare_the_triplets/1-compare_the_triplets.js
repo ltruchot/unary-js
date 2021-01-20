@@ -1,24 +1,22 @@
 import {
-  equals, gt, ifElse, lmapInc, rmapInc, unless, reduceIndexed,
+  ifElse, lmapInc, rmapInc, unless, reduce, zip, isBalancedPair, isLeftGreater,
 } from 'unary-js';
 
 /**
  * Choose which part of a pair should change, considering who wins
- * @param {number[]} scores of Alice
- * @param {[number,number]} result pair representing the final scores  [Alice, Bob]
- * @param {number} current score of Bob in current iteration
- * @param {number} i index of the current iteration
+ * @param {[number,number]} acc pair representing the final scores  [Alice, Bob]
+ * @param {number} cur score of Bob in cur iteration
  */
-const dividePoints = (scores) => (result) => (current) => (i) => unless(
-  () => equals(current)(scores[i]), // unless they have a different score, nothing change
+const splitPoints = (acc) => (cur) => unless(
+  () => isBalancedPair(cur), // unless they have a different score, nothing change
 )(
   ifElse(
-    () => gt(scores[i])(current), // considering who wins, change the result
+    () => isLeftGreater(cur), // considering who wins, change the result
   )(lmapInc)(rmapInc), // lmapInc increments left in pair [Alice, Bob], rmapInc right
-)(result);
+)(acc);
 
 // Complete the compareTriplets function below.
 export default function compareTriplets(a, b) {
   // reduce the [0, 0] accumulator to [alice, bob] wins, return the final count
-  return reduceIndexed([0, 0])(dividePoints(b))(a);
+  return reduce([0, 0])(splitPoints)(zip(b)(a));
 }

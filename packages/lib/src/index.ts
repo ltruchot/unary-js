@@ -8,4 +8,5 @@ export * from './any';
 export * from './function';
 export * from './misc';
 export * from './pair';
+export * from './pair_misc';
 export * from './void';

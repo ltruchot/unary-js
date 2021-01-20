@@ -9,15 +9,15 @@
     "url": "https://github.com/ltruchot/unary-js"
   },
   "scripts": {
-    "clean": "lerna clean && rm -rf node_modules",
     "test": "lerna run test",
     "build": "lerna run build --since develop",
     "rebuild": "lerna run build",
     "bootstrap": "lerna bootstrap --hoist --strict",
     "version": "lerna version patch --yes --force-publish=unary-js",
+    "link": "lerna link",
     "npmi:unlock": "rimraf \"./**/package-lock.json\"",
     "npmi:rm": "lerna clean && npm cache clean -f && npm cache verify",
-    "npmi:first": "npm run bootstrap && npm run build",
+    "npmi:first": "npm run bootstrap && npm run build && npm run link",
     "npmi:reset": "npm run npmi:unlock && npm run npmi:rm && npm run npmi:first"
   },
   "author": "Loïc TRUCHOT",

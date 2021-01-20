@@ -29,7 +29,7 @@ export const zip: FnZip = (xs) => reduceIndexed([])(
   (acc) => (cur) => (i) => [...acc, [cur, xs[i]]],
 );
 
-export const slice = (i1: number) => (i2: number) => reduceIndexed([])(
+export const slice = (i1: number) => (i2: number): any => reduceIndexed([])(
   (acc) => (cur) => (i) => unless(
     () => or(lt(i1)(i))(gte(i2)(i)),
   )((xs: any[]) => [...xs, cur])(acc),
