@@ -16,8 +16,10 @@ This implies that there is no longer any operator or control structure in the la
 
 
 For example, iterations are always performed by recursion (no for / no while) and so on.  
-It's sadly preventing JS from becoming efficient in intensive iteration with this approach.  
-Even if [TCO](https://en.wikipedia.org/wiki/Tail_call) is [part of ES6 standards](http://www.ecma-international.org/ecma-262/6.0/#sec-tail-position-calls), only Safari implements it. SpiderMonkey (Mozilla) don't have it [and Chromium V8 dropped it](https://stackoverflow.com/questions/42788139/es6-tail-recursion-optimisation-stack-overflow) therefore Firefox, Chrome, Edge and Node.js cannot ensure a good execution of this library: do not not use in production !
+It's sadly preventing JS from becoming efficient in intensive iteration.  
+Even if [TCO](https://en.wikipedia.org/wiki/Tail_call) is [part of ES6 standards](http://www.ecma-international.org/ecma-262/6.0/#sec-tail-position-calls), only Safari implements it. SpiderMonkey (Mozilla) don't have it [and Chromium V8 dropped it](https://stackoverflow.com/questions/42788139/es6-tail-recursion-optimisation-stack-overflow) therefore Firefox, Chrome, Edge and Node.js cannot ensure a good execution of this library !
+
+We hopefully still can bypass absence of TCO, using a safe Y combinator (@see `tco.ts` file and tests).
 
 ## But why ?
 
@@ -26,8 +28,8 @@ Even if [TCO](https://en.wikipedia.org/wiki/Tail_call) is [part of ES6 standards
 - make JS more [LISP-like](https://lisp-lang.org/), [Elm-like](https://elm-lang.org/)
 - demonstrate [currying](https://en.wikipedia.org/wiki/Currying)
 - demonstrate the efficiency and simplicity of unit tests in FP
-- discover the [lambda calculus](https://www.youtube.com/watch?v=3VQ382QG-y4)
-- discover the [theory of categories](https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/)
+- discover the [Lambda Calculus](https://www.youtube.com/watch?v=3VQ382QG-y4)
+- discover the [Category Theory](https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/)
 - be playful with FP and grow the FP hidden cult
 
 ## Example of use
@@ -40,12 +42,12 @@ Even if [TCO](https://en.wikipedia.org/wiki/Tail_call) is [part of ES6 standards
 ## Why this strange syntaxe actually works ?
 
 Lambda Calculus and Turing Machine are two competing concepts covering the same field: automated calculations.
-They are very similar, both are proof that with a machine capable of "memory" (state) and "jump instructions" (goto), we can perform any calculation.
+They are very similar, both prove that with a machine capable of "memory" (state) and "jump instructions" (goto), we can perform any calculation.
 
 
 With the Turing machine (and the Von Neuman architecture which inspires procedural and OOP languages), your program will be a set of "statements" and shared states:
 - create variables
-- mutate them with operations (+, -...), control structures (if, for ...) and methods (setters) until the desired state is obtained
+- mutate them with operations (+, -...), control structures and methods until the desired state is obtained
 
 
 On the contrary, Lambda Calculus, leads to FP: your program will be a bunch of "expressions" and pure functions.
@@ -81,6 +83,6 @@ In the end, you can consume this library with or without TypeScript, the best of
 
 ## Why not just Ramda?
 
-Unary-js really looks like Ramda: the functions have the same signature, the same name, you can combine them in the same way (and even better) and they are curried.
+Unary-js really looks like Ramda: the functions have the same signature, the same name, you can combine them in the same way and they are curried.
 
-But Ramda is a production project, aiming to make operators and main functions useful in a point-free style, without losing performance. In Ramda's implementations, you'll find a ton of "while", "if" and other statements that we don't want to use here. We are not focusing on performance at all, but only on a unary function without statements, only made up of other functions.
+But Ramda is a production project, aiming to make operators and main functions useful in a [point-free style](https://en.wikipedia.org/wiki/Tacit_programming), without losing performance. In Ramda's implementations, you'll find a ton of "while", "if" and other statements that we don't want to use here. We are not focusing on performance at all, but only on unary functions without statements, from the bottom to the top.
