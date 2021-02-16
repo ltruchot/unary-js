@@ -1,63 +1,51 @@
-// inspired by unary-js
+import {
+  toNumber,
+  add,
+  dec,
+  eq0, gte, ifElse, inc, lt, or, sub, unless, where, isMultipleOf, abs, length, head, tail,
+  safeY3, safeY4, compose3,
+} from 'unary-js';
 
-// operations
-const negate = (n) => -n;
-const equals = (n1) => (n2) => n1 === n2;
-const add = (n1) => (n2) => n2 + n1;
-const sub = (n1) => (n2) => n2 - n1;
-const mod = (n1) => (n2) => n2 % n1;
-const lt = (n1) => (n2) => n2 < n1;
-const gte = (n1) => (n2) => n2 >= n1;
-const or = (b1) => (b2) => b2 || b1;
-const eq0 = equals(0);
-const inc = add(1);
-const lt0 = lt(0);
-
-// functional
-const identity = (any) => any;
-const compose = (f) => (g) => (any) => f(g(any));
-
-// conditionals
-const ifElse = (cond) => (f) => (g) => (any) => (cond(any) ? f(any) : g(any));
-const unless = (cond) => (f) => ifElse(cond)(identity)(f);
-const where = (cond) => (f) => ifElse(cond)(f)(identity);
-
-// compositions
-const isMultipleOf = (n) => compose(eq0)(mod(n));
-const abs = where(lt0)(negate);
-
-// arrays
-const head = (xs) => xs[0];
-const tail = (xs) => {
-  const [, ...xsTail] = xs;
-  return xsTail;
-};
-const length = (xs) => xs.length;
-const reduceIndexedAndKeep = (i) => (acc) => (f) => (xs) => unless(
-  () => eq0(length(xs)),
-)(() => reduceIndexedAndKeep(inc(i))(f(acc)(head(xs))(i))(f)(tail(xs)))(acc);
-
-const reduceIndexed = reduceIndexedAndKeep(0);
-const slice = (i1) => (i2) => reduceIndexed([])(
-  (acc) => (cur) => (i) => unless(
-    () => or(lt(i1)(i))(gte(i2)(i)),
-  )((xs) => [...xs, cur])(acc),
+const safeReduceIndexedAndKeep = safeY4(
+  (reduceIndexedAndKeep) => (i) => (acc) => (f) => (xs) => unless(() => eq0(length(xs)))(
+    () => reduceIndexedAndKeep(inc(i))(f(acc)(head(xs))(i))(f)(tail(xs)),
+  )(acc),
 );
 
-const reduce = (acc) => (f) => (xs) => unless(
-  () => eq0(length(xs)),
-)(() => reduce(f(acc)(head(xs)))(f)(tail(xs)))(acc);
+const safeReduceIndexed = safeReduceIndexedAndKeep(0);
 
-const flatten = reduce([])((acc) => (cur) => ifElse(
-  () => (cur instanceof Array),
-)(() => [...acc, ...flatten(cur)])(() => [...acc, cur])(acc));
+const safeSlice = (i1) => (i2) => safeReduceIndexed([])(
+  (acc) => (cur) => (i) => unless(() => or(lt(i1)(i))(gte(i2)(i)))((xs) => [...xs, cur])(acc),
+);
+
+const safeReduce = safeY3(
+  (reduce) => (acc) => (f) => (xs) => unless(() => eq0(
+    length(xs),
+  ))(() => reduce(f(acc)(head(xs)))(f)(tail(xs)))(acc),
+);
+
+const safeFlatten = safeReduce([])(
+  (acc) => (cur) => ifElse(() => cur instanceof Array)(() => [...acc, ...safeFlatten(cur)])(() => [
+    ...acc,
+    cur,
+  ])(acc),
+);
 
 // misc
-const sumSkip = (skip) => reduceIndexed(0)((acc) => (cur) => (i) => where(
-  () => isMultipleOf(inc(skip))(i),
-)(add(cur))(acc));
-const sumSkip3 = sumSkip(3);
-const sumSkip1 = sumSkip(1);
+const safeKeepMultipleOf = (skip) => safeReduceIndexed(0)(
+  (acc) => (cur) => (i) => where(() => isMultipleOf(skip)(i))(add(cur))(acc),
+);
+
+const safeMap = (f) => (xs) => safeReduce([])((acc) => (cur) => [...acc, f(cur)])(xs);
+const safeMapToNumber = safeMap(toNumber);
+
+const diagDiff = (arr) => compose3((xs) => abs(
+  sub(
+    safeKeepMultipleOf(dec(length(arr)))(
+      safeSlice(dec(length(arr)))(sub(dec(length(arr)))(length(xs)))(xs),
+    ),
+  )(safeKeepMultipleOf(inc(length(arr)))(xs)),
+))(safeMapToNumber)(safeFlatten)(arr);
 
 /*
  * Complete the 'diagonalDifference' function below.
@@ -68,7 +56,5 @@ const sumSkip1 = sumSkip(1);
 
 export default function diagonalDifference(arr) {
   // return answer is right, but hacker-rank array is sometimes an array of string, so....
-  return compose((xs) => abs(
-    sub(sumSkip1(slice(2)(sub(2)(length(xs)))(xs)))(sumSkip3(xs)),
-  ))(flatten)(arr);
+  return diagDiff(arr);
 }
