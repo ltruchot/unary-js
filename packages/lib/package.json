@@ -1,6 +1,6 @@
 {
   "name": "unary-js",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Only unary function, for the glory of FP in JS.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
