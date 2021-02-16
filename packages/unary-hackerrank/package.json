@@ -1,6 +1,6 @@
 {
   "name": "unary-hackerrank",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "",
   "main": "script.js",
   "type": "module",
@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "unary-js": "^0.0.6"
+    "unary-js": "^0.0.7"
   },
   "devDependencies": {
     "eslint": "7.18.0",
