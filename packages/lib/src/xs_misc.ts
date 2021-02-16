@@ -1,5 +1,5 @@
 import { equals, unless, ifElse } from './any';
-import { compose } from './function';
+import { compose2 } from './function';
 import { eq0, inc } from './number_misc';
 import { or } from './boolean';
 import { FnGeneric2, FnGeneric3 } from './generic';
@@ -51,7 +51,7 @@ export function takeAndKeep(
   )(() => newArr)(takeAndKeep([...newArr, head(xs)])(n))(tail(xs));
 }
 
-export const eqLastX: FnXsToBool<any> = compose(equals)(last);
+export const eqLastX: FnXsToBool<any> = compose2(equals)(last);
 
 /**
  * calculate the addition of all the member of an list of number

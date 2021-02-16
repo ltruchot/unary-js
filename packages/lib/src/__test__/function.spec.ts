@@ -1,6 +1,10 @@
 import { identity } from '../any';
-import { compose } from '../function';
+import { compose2, compose3 } from '../function';
 
-test('compose', () => {
-  expect(compose(identity)(identity)('test')).toBe('test');
+test('compose2', () => {
+  expect(compose2(identity)(identity)('test')).toBe('test');
+});
+
+test('compose3', () => {
+  expect(compose3(identity)(identity)(identity)('test')).toBe('test');
 });
