@@ -1,21 +1,47 @@
-import { ifElse, equals } from './any';
+import { equals, unless, ifElse } from './any';
 import { compose } from './function';
-import { applyTo } from './misc';
-import { dec } from './number_misc';
+import { eq0, inc } from './number_misc';
+import { or } from './boolean';
+import { FnGeneric2, FnGeneric3 } from './generic';
+import { add, gte, lt } from './number';
 
-type FnXsToNumber1 = (xs: readonly any[]) => number;
-export const length: FnXsToNumber1 = (xs) => xs.length;
+import {
+  tail, head, length, last,
+} from './xs';
 
-type FnXsToT1 = <T>(list: readonly T[]) => T
-export const head: FnXsToT1 = (xs) => xs[0];
-export const second: FnXsToT1 = (xs) => xs[1];
-export const last: FnXsToT1 = (xs) => xs[length(xs) - 1];
+type FnReduce = (acc: any) => (f: FnGeneric2<any>) => (xs: any[]) => any;
+type FnReduceIndexed = (acc: any) => (f: FnGeneric3<any>) => (xs: any[]) => any;
+type FnReduceIndexedAndKeep = (i: number) => FnReduceIndexed;
+type FnMap = (f: (x: any) => any) => (xs: any[]) => any[];
+type FnZip = (xs: any[]) => FnReduceIndexed;
+type FnXsToBool<T> = (xs: T[]) => (a: T) => boolean;
+type FnXsNToNumber = (xsN: number[]) => (a: number) => number;
 
-type FnXs1 = <T>(list: readonly T[]) => T[]
-export const tail: FnXs1 = (xs) => {
-  const [, ...xsTail] = xs;
-  return xsTail;
-};
+export const reduce: FnReduce = (acc) => (f) => (xs) => unless(
+  () => eq0(length(xs)),
+)(() => reduce(f(acc)(head(xs)))(f)(tail(xs)))(acc);
+
+export const reduceIndexedAndKeep: FnReduceIndexedAndKeep = (i) => (acc) => (f) => (xs) => unless(
+  () => eq0(length(xs)),
+)(() => reduceIndexedAndKeep(inc(i))(f(acc)(head(xs))(i))(f)(tail(xs)))(acc);
+
+export const reduceIndexed: FnReduceIndexed = reduceIndexedAndKeep(0);
+
+export const map: FnMap = (f) => (xs) => reduce([])((acc) => (cur) => [...acc, f(cur)])(xs);
+
+export const zip: FnZip = (xs) => reduceIndexed([])(
+  (acc) => (cur) => (i) => [...acc, [cur, xs[i]]],
+);
+
+export const slice = (i1: number) => (i2: number): any => reduceIndexed([])(
+  (acc) => (cur) => (i) => unless(
+    () => or(lt(i1)(i))(gte(i2)(i)),
+  )((xs: any[]) => [...xs, cur])(acc),
+);
+
+export const flatten = reduce([])((acc) => (cur) => ifElse(
+  () => (cur instanceof Array),
+)(() => [...acc, ...flatten(cur)])(() => [...acc, cur])(acc));
 
 export function takeAndKeep(
   newArr: any[],
@@ -25,15 +51,11 @@ export function takeAndKeep(
   )(() => newArr)(takeAndKeep([...newArr, head(xs)])(n))(tail(xs));
 }
 
-export const take = applyTo([])(takeAndKeep);
+export const eqLastX: FnXsToBool<any> = compose(equals)(last);
 
-export const dropLast = (xs: any[]) => take(
-  compose(dec)(length)(xs),
-)(xs);
-
-type FnXsToFn = (xs: any[]) => (a: any) => boolean;
-export const eqLastX: FnXsToFn = compose(equals)(last);
-
-export const indexOf = (xs: any[]) => (el: any) => ifElse(
-  eqLastX(xs)(el),
-)(() => length(xs) - 1)(compose(indexOf)(dropLast)(xs))(el);
+/**
+ * calculate the addition of all the member of an list of number
+ * @param {Number[]} xs list of number
+ * @return {Number}
+ */
+export const sum: FnXsNToNumber = reduce(0)(add);

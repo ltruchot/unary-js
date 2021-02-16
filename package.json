@@ -10,14 +10,15 @@
   },
   "scripts": {
     "test": "lerna run test",
-    "build": "lerna run build --since develop",
-    "rebuild": "lerna run build",
+    "test:hackerrank": "lerna run --scope unary-hackerrank test",
+    "build": "lerna run build",
+    "rebuild": "lerna run build --since develop",
     "bootstrap": "lerna bootstrap --hoist --strict",
     "version": "lerna version patch --yes --force-publish=unary-js",
     "link": "lerna link",
     "npmi:unlock": "rimraf \"./**/package-lock.json\"",
     "npmi:rm": "lerna clean && npm cache clean -f && npm cache verify",
-    "npmi:first": "npm run bootstrap && npm run build && npm run link",
+    "npmi:first": "npm run bootstrap && npm run link && lerna exec npm install",
     "npmi:reset": "npm run npmi:unlock && npm run npmi:rm && npm run npmi:first"
   },
   "author": "Loïc TRUCHOT",
