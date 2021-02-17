@@ -1,16 +1,18 @@
-import { equals, unless, ifElse } from './any';
+import {
+  equals, unless, ifElse,
+} from './any';
 import { compose2 } from './function';
 import { eq0, inc } from './number_misc';
 import { or } from './boolean';
-import { FnGeneric2, FnGeneric3 } from './generic';
+import { FnAppend2, FnAppend3 } from './generic';
 import { add, gte, lt } from './number';
 
 import {
   tail, head, length, last,
 } from './xs';
 
-type FnReduce = (acc: any) => (f: FnGeneric2<any>) => (xs: any[]) => any;
-type FnReduceIndexed = (acc: any) => (f: FnGeneric3<any>) => (xs: any[]) => any;
+type FnReduce = (acc: any) => (f: FnAppend2<any>) => (xs: any[]) => any;
+type FnReduceIndexed = (acc: any) => (f: FnAppend3<any>) => (xs: any[]) => any;
 type FnReduceIndexedAndKeep = (i: number) => FnReduceIndexed;
 type FnMap = (f: (x: any) => any) => (xs: any[]) => any[];
 type FnZip = (xs: any[]) => FnReduceIndexed;

@@ -1,13 +1,13 @@
 import { identity, ifElse } from './any';
-import { FnGeneric1, FnGeneric2 } from './generic';
+import { FnAppend1, FnAppend2 } from './generic';
 
-type FnBool1 = FnGeneric1<boolean>;
+type FnBool1 = FnAppend1<boolean>;
 export const t: FnBool1 = (_) => true;
 export const f: FnBool1 = (_) => false;
 
 export const not: FnBool1 = (b: boolean) => !b;
 
-type FnBool2 = FnGeneric2<boolean>;
+type FnBool2 = FnAppend2<boolean>;
 export const and: FnBool2 = (b1) => (b2) => b2 && b1;
 export const nand: FnBool2 = (b1) => (b2) => not(and(b1)(b2));
 export const or: FnBool2 = (b1) => (b2) => b2 || b1;

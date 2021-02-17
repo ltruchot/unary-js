@@ -9,6 +9,6 @@ export * from './generic';
 export * from './any';
 export * from './function';
 export * from './misc';
-export * from './void';
+export * from './effect_misc';
 export * from './type';
 export * from './tco';
