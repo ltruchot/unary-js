@@ -10,11 +10,12 @@ export const incHead = compose2(inc)(head);
 export const incSecond = compose2(inc)(second);
 export const lmapInc = lmap(inc);
 export const rmapInc = rmap(inc);
+export const lastIndex = compose2(dec)(length);
 
 export const take = applyTo([])(takeAndKeep);
 
 export const dropLast = (xs: any[]) => take(
-  compose2(dec)(length)(xs),
+  lastIndex(xs),
 )(xs);
 
 export const indexOf = (xs: any[]) => (el: any) => ifElse(

@@ -18,13 +18,16 @@ type FnMap = (f: (x: any) => any) => (xs: any[]) => any[];
 type FnZip = (xs: any[]) => FnReduceIndexed;
 type FnXsToBool<T> = (xs: T[]) => (a: T) => boolean;
 type FnXsNToNumber = (xsN: number[]) => (a: number) => number;
+type FnXsToNumber = (xs: any[]) => number;
+
+export const isEmpty: FnXsToNumber = compose2(eq0)(length);
 
 export const reduce: FnReduce = (acc) => (f) => (xs) => unless(
-  () => eq0(length(xs)),
+  () => isEmpty(xs),
 )(() => reduce(f(acc)(head(xs)))(f)(tail(xs)))(acc);
 
 export const reduceIndexedAndKeep: FnReduceIndexedAndKeep = (i) => (acc) => (f) => (xs) => unless(
-  () => eq0(length(xs)),
+  () => isEmpty(xs),
 )(() => reduceIndexedAndKeep(inc(i))(f(acc)(head(xs))(i))(f)(tail(xs)))(acc);
 
 export const reduceIndexed: FnReduceIndexed = reduceIndexedAndKeep(0);
