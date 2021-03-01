@@ -34,7 +34,8 @@ We hopefully still can bypass absence of TCO, using a safe Y combinator (@see `t
 
 ## Example of use
 
-- [Hacker Rank](https://www.hackerrank.com) problems are solved with unary-js in `demo` subfolder (WIP)
+- [Hacker Rank](https://www.hackerrank.com) problems, resolved with unary-js [here](https://github.com/ltruchot/unary-js/tree/main/packages/unary-hackerrank)
+- [LeetCode problems](https://leetcode.com/problemset/all/) WIP
 - [Project Euler](https://projecteuler.net/) WIP
 - [Advent of Code](https://adventofcode.com/) WIP
 - [JavaScript Algorithms](https://github.com/trekhleb/javascript-algorithms) WIP

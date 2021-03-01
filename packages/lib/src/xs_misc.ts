@@ -1,5 +1,5 @@
 import {
-  equals, unless, ifElse,
+  equals, unless, ifElse, where,
 } from './any';
 import { compose2 } from './function';
 import { eq0, inc } from './number_misc';
@@ -15,6 +15,7 @@ type FnReduce = (acc: any) => (f: FnAppend2<any>) => (xs: any[]) => any;
 type FnReduceIndexed = (acc: any) => (f: FnAppend3<any>) => (xs: any[]) => any;
 type FnReduceIndexedAndKeep = (i: number) => FnReduceIndexed;
 type FnMap = (f: (x: any) => any) => (xs: any[]) => any[];
+type FnFilter = (f: (x: any) => boolean) => (xs: any[]) => any[];
 type FnZip = (xs: any[]) => FnReduceIndexed;
 type FnXsToBool<T> = (xs: T[]) => (a: T) => boolean;
 type FnXsNToNumber = (xsN: number[]) => (a: number) => number;
@@ -33,6 +34,10 @@ export const reduceIndexedAndKeep: FnReduceIndexedAndKeep = (i) => (acc) => (f) 
 export const reduceIndexed: FnReduceIndexed = reduceIndexedAndKeep(0);
 
 export const map: FnMap = (f) => (xs) => reduce([])((acc) => (cur) => [...acc, f(cur)])(xs);
+
+export const filter: FnFilter = (f) => (xs) => reduce([])(
+  (acc) => (cur) => where(() => f(cur))(() => [...acc, cur])(acc),
+)(xs);
 
 export const zip: FnZip = (xs) => reduceIndexed([])(
   (acc) => (cur) => (i) => [...acc, [cur, xs[i]]],
