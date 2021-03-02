@@ -21,7 +21,7 @@ export const dropDecimal: FnNumber1 = parseIntWithRadix(10);
 export const round: FnNumber1 = compose2(dropDecimal)(
   ifElse(lt0)(sub(0.5))(add(0.5)),
 );
-export const roundFloat: FnNumber2 = (num) => (precision) => {
+export const roundFloat: FnNumber2 = (precision) => (num) => {
   const power = pow(precision)(10);
   return div(power)(round(mul(num)(power)));
 };

@@ -57,7 +57,7 @@ export function takeAndKeep(
   newArr: any[],
 ) {
   return (n: number) => (xs: any[]): any[] => ifElse(
-    equals(n)(length(newArr)),
+    () => equals(n)(length(newArr)),
   )(() => newArr)(takeAndKeep([...newArr, head(xs)])(n))(tail(xs));
 }
 
