@@ -12,7 +12,7 @@ Unary JS is an educational attempt to demonstrate the concepts of Functional Pro
 The idea is to stick to **pure unary functions** to do any kind of calculation.
 
 
-This implies that there is no longer any operator or control structure in the language, but only first-class functions, to compose and combine.
+This implies that there is no longer methods, operators or control structures in the language, but only first-class functions, to compose and combine.
 
 
 For example, iterations are always performed by recursion (no for / no while) and so on.  

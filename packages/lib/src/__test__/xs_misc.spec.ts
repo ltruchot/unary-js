@@ -1,7 +1,7 @@
 import { add } from '../number';
-import { inc } from '../number_misc';
+import { inc, eq0, gt0 } from '../number_misc';
 import {
-  reduce, map, slice, zip, sum,
+  reduce, map, slice, zip, sum, filter,
 } from '../xs_misc';
 
 test('reduce', () => {
@@ -10,6 +10,11 @@ test('reduce', () => {
 
 test('map', () => {
   expect(map(inc)([1, 2, 3])).toEqual([2, 3, 4]);
+});
+
+test('filter', () => {
+  expect(filter(eq0)([0, 1, 0, 0, 1])).toEqual([0, 0, 0]);
+  expect(filter(gt0)([0, 1, 0, 0, 1])).toEqual([1, 1]);
 });
 
 test('slice', () => {

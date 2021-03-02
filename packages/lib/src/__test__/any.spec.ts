@@ -1,5 +1,4 @@
-import { identity, tap } from '../any';
-import { log } from '../void';
+import { identity } from '../any';
 
 test('identity', () => {
   expect(identity(false)).toBe(false);
@@ -10,10 +9,4 @@ test('identity', () => {
   const o = { test: 'test' };
   expect(identity(o)).toBe(o);
   expect(identity('test')).not.toBe('fake');
-});
-
-test('tap', () => {
-  const tapLog = tap(log);
-  expect(tapLog('test')).toBe('test');
-  expect(tapLog('test')).not.toBe('fake');
 });
