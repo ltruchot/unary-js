@@ -10,6 +10,16 @@ const trampoline = (bounce: any): any => {
   return result;
 };
 
+export const safeY1 = (rf: FnAppend3<any>): any => {
+  const bounce2 = (f: FnAppend2<any>) => (x: any) => ({
+    isBounce: true, f: () => f(x),
+  });
+  const Y2 = (f: FnAppend3<any>): any => bounce2(
+    (x: any) => f(Y2(f))(x),
+  );
+  return (x: any) => trampoline(Y2(rf)(x));
+};
+
 export const safeY2 = (rf: FnAppend3<any>): any => {
   const bounce2 = (f: FnAppend2<any>) => (x: any) => (y: any) => ({
     isBounce: true, f: () => f(x)(y),
