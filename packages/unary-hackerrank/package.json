@@ -1,24 +1,19 @@
 {
   "name": "unary-hackerrank",
-  "version": "0.0.7",
-  "description": "",
-  "main": "script.js",
+  "version": "0.0.0",
+  "private": true,
+  "description": "HackerRank problems solved with unary-js.",
+  "license": "CC-BY-NC-4.0",
   "type": "module",
   "scripts": {
-    "start": "jest",
-    "test": "jest --watch"
+    "ready": "vp test"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "unary-js": "^0.0.7"
+    "unary-js": "workspace:*"
   },
   "devDependencies": {
-    "eslint": "7.18.0",
-    "eslint-config-airbnb-base": "14.2.1",
-    "eslint-plugin-import": "2.22.1",
-    "jest": "26.6.3",
-    "jest-esm-transformer": "1.0.0"
+    "@types/node": "catalog:",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
   }
 }

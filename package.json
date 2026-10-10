@@ -1,30 +1,32 @@
 {
   "name": "unary-js-monorepo",
-  "version": "0.0.2",
-  "description": "Only unary function, for the glory of FP in JS.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "version": "0.0.0",
+  "private": true,
+  "description": "unary-js, a library of curried unary functions, and the exercises solved with it: one Vite+ workspace.",
+  "license": "CC-BY-NC-4.0",
+  "author": "Loïc TRUCHOT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ltruchot/unary-js"
+    "url": "git+https://github.com/ltruchot/unary-js.git"
   },
+  "type": "module",
   "scripts": {
-    "test": "lerna run test",
-    "test:hackerrank": "lerna run --scope unary-hackerrank test",
-    "build": "lerna run build",
-    "rebuild": "lerna run build --since develop",
-    "bootstrap": "lerna bootstrap --hoist --strict",
-    "version": "lerna version patch --yes --force-publish=unary-js",
-    "link": "lerna link",
-    "npmi:unlock": "rimraf \"./**/package-lock.json\"",
-    "npmi:rm": "lerna clean && npm cache clean -f && npm cache verify",
-    "npmi:first": "npm run bootstrap && npm run link && lerna exec npm install",
-    "npmi:reset": "npm run npmi:unlock && npm run npmi:rm && npm run npmi:first"
+    "ready": "vp check && vp run -r ready",
+    "prepare": "vp config"
   },
-  "author": "Loïc TRUCHOT",
-  "license": "CC-BY-NC-4.0",
   "devDependencies": {
-    "lerna": "3.22.1",
-    "rimraf": "3.0.2"
+    "@types/node": "catalog:",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.10.1",
+      "onFail": "download"
+    }
+  },
+  "engines": {
+    "node": ">=22.18.0"
   }
 }
