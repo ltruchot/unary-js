@@ -16,13 +16,21 @@ no app: `packages/lib` is a library. Ignore those rows; what replaces them is he
 
 ## The workspace
 
-| Package                     | `ready`                                                         | Notes                                                                |
-| --------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------- |
-| root                        | `bash scripts/check-versions.sh && vp check && vp run -r ready` | versions, format, lint, types, then each package                     |
-| `packages/lib`              | `vp pack && vp test`                                            | builds `dist/`, tests the sources                                    |
-| `packages/unary-hackerrank` | `vp test`                                                       | depends on `unary-js` (`workspace:*`): runs after it, on its `dist/` |
+| Package                     | `ready`                                                                                    | Notes                                                                |
+| --------------------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| root                        | `bash scripts/check-versions.sh && vp -C packages/lib pack && vp check && vp run -r ready` | versions, the library build, format, lint, types, then each package  |
+| `packages/lib`              | `vp pack && vp test`                                                                       | builds `dist/`, tests the sources                                    |
+| `packages/unary-hackerrank` | `vp test`                                                                                  | depends on `unary-js` (`workspace:*`): runs after it, on its `dist/` |
 
 ## The library build
+
+- The root `ready` builds the library **before** `vp check`: `packages/unary-hackerrank` imports
+  `unary-js` through its `exports`, that is `packages/lib/dist`. Without `dist/` (a clean clone,
+  CI), the type check cannot resolve the import and every use of it fails with
+  `typescript(no-unsafe-call): Unsafe call of a(n) error type typed value` (135 errors on the
+  first CI run, 2026-10-10, while the gate was green on a machine that had a `dist/`).
+- So a green gate is only proven from a clean tree: `rm -r packages/lib/dist` first when the
+  gate or a package's `exports` changed.
 
 - `vp -C packages/lib pack` reads the `pack` block of `packages/lib/vite.config.ts`: one entry
   (`src/index.ts`), ESM only, declarations. Output: `dist/index.mjs`, `dist/index.d.mts`.
