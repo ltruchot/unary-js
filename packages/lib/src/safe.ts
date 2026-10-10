@@ -1,41 +1,60 @@
-import {
-  FnAppend2, FnAppend3, FnAppend4, FnAppend5,
-} from './generic';
+// Stack-safe recursion: a recursive call returns a `Bounce` instead of growing
+// the stack, and `trampoline` runs the bounces in a loop. That loop is the one
+// `while` of the library: JavaScript engines other than JavaScriptCore have no
+// tail call optimization.
 
-const trampoline = (bounce: any): any => {
-  let result = bounce;
-  while (result && result.isBounce) {
-    result = result.f();
+/** A suspended recursive call. */
+export class Bounce<R> {
+  readonly run: () => Step<R>;
+
+  constructor(run: () => Step<R>) {
+    this.run = run;
   }
-  return result;
+}
+
+/** What a function made safe returns: its result, or its next recursive call. */
+export type Step<R> = R | Bounce<R>;
+
+const trampoline = <R>(first: Step<R>): R => {
+  let step = first;
+  while (step instanceof Bounce) {
+    step = step.run();
+  }
+  return step;
 };
 
-export const safeY2 = (rf: FnAppend3<any>): any => {
-  const bounce2 = (f: FnAppend2<any>) => (x: any) => (y: any) => ({
-    isBounce: true, f: () => f(x)(y),
-  });
-  const Y2 = (f: FnAppend3<any>): any => bounce2(
-    (x: any) => (y: any) => f(Y2(f))(x)(y),
-  );
-  return (x: any) => (y: any) => trampoline(Y2(rf)(x)(y));
+type Rec1<A, R> = (a: A) => Step<R>;
+type Rec2<A, B, R> = (a: A) => Rec1<B, R>;
+type Rec3<A, B, C, R> = (a: A) => Rec2<B, C, R>;
+type Rec4<A, B, C, D, R> = (a: A) => Rec3<B, C, D, R>;
+
+/** Stack-safe fixed point of a recursive function of one argument. */
+export const safeY1 = <A, R>(rf: (self: Rec1<A, R>) => Rec1<A, R>): ((a: A) => R) => {
+  const self: Rec1<A, R> = (a) => new Bounce(() => rf(self)(a));
+  return (a) => trampoline(self(a));
 };
 
-export const safeY3 = (rf: FnAppend4<any>): any => {
-  const bounce3 = (f: FnAppend3<any>) => (x: any) => (y: any) => (z: any) => ({
-    isBounce: true, f: () => f(x)(y)(z),
-  });
-  const Y3 = (f: FnAppend3<any>): any => bounce3(
-    (x: any) => (y: any) => (z: any) => f(Y3(f))(x)(y)(z),
-  );
-  return (x: any) => (y: any) => (z: any) => trampoline(Y3(rf)(x)(y)(z));
+/** Stack-safe fixed point of a recursive function of two curried arguments. */
+export const safeY2 = <A, B, R>(
+  rf: (self: Rec2<A, B, R>) => Rec2<A, B, R>,
+): ((a: A) => (b: B) => R) => {
+  const self: Rec2<A, B, R> = (a) => (b) => new Bounce(() => rf(self)(a)(b));
+  return (a) => (b) => trampoline(self(a)(b));
 };
 
-export const safeY4 = (rf: FnAppend5<any>): any => {
-  const bounce4 = (f: FnAppend4<any>) => (a1: any) => (a2: any) => (a3: any) => (a4: any) => ({
-    isBounce: true, f: () => f(a1)(a2)(a3)(a4),
-  });
-  const Y4 = (f: FnAppend4<any>): any => bounce4(
-    (a1: any) => (a2: any) => (a3: any) => (a4: any) => f(Y4(f))(a1)(a2)(a3)(a4),
-  );
-  return (a1: any) => (a2: any) => (a3: any) => (a4: any) => trampoline(Y4(rf)(a1)(a2)(a3)(a4));
+/** Stack-safe fixed point of a recursive function of three curried arguments. */
+export const safeY3 = <A, B, C, R>(
+  rf: (self: Rec3<A, B, C, R>) => Rec3<A, B, C, R>,
+): ((a: A) => (b: B) => (c: C) => R) => {
+  const self: Rec3<A, B, C, R> = (a) => (b) => (c) => new Bounce(() => rf(self)(a)(b)(c));
+  return (a) => (b) => (c) => trampoline(self(a)(b)(c));
+};
+
+/** Stack-safe fixed point of a recursive function of four curried arguments. */
+export const safeY4 = <A, B, C, D, R>(
+  rf: (self: Rec4<A, B, C, D, R>) => Rec4<A, B, C, D, R>,
+): ((a: A) => (b: B) => (c: C) => (d: D) => R) => {
+  const self: Rec4<A, B, C, D, R> = (a) => (b) => (c) => (d) =>
+    new Bounce(() => rf(self)(a)(b)(c)(d));
+  return (a) => (b) => (c) => (d) => trampoline(self(a)(b)(c)(d));
 };

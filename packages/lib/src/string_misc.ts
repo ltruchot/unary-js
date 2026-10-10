@@ -1,25 +1,50 @@
-import {
-  equals, ifElse, unless,
-} from './any';
-import { compose2 } from './function';
-import { inc } from './number_misc';
-import { strConcat } from './string';
-import { isUndefined } from './type_misc';
+import { equals, ifElse, unless } from "./any.ts";
+import { or } from "./boolean.ts";
+import { gte } from "./number.ts";
+import { inc } from "./number_misc.ts";
+import { safeY1, safeY2 } from "./safe.ts";
+import type { Step } from "./safe.ts";
+import { charAt, strConcat } from "./string.ts";
+import { uncons } from "./xs.ts";
+import { reduce } from "./xs_misc.ts";
 
-const strLengthAndKeep = (n: number) => (s: string): any => ifElse(
-  () => isUndefined(s[n]),
-)(() => n)(strLengthAndKeep(inc(n)))(s);
+const isEmptyStr = equals("");
 
-export const strLength = strLengthAndKeep(0);
+export const strLength = (s: string): number =>
+  safeY1<number, number>(
+    (self) => (n) =>
+      ifElse<string>(isEmptyStr)((): Step<number> => n)(() => self(inc(n)))(charAt(n)(s)),
+  )(0);
 
-const splitAndKeep = (xs: string[]) => (n: number) => (s: string): any => ifElse(
-  () => equals(strLength(s))(n),
-)(() => xs)(() => splitAndKeep([...xs, s[n]])(inc(n))(s))(xs);
+/** A string as the list of its characters (UTF-16 code units). */
+export const split = (s: string): string[] =>
+  safeY2<readonly string[], number, string[]>(
+    (self) => (chars) => (n) =>
+      ifElse<string>(isEmptyStr)((): Step<string[]> => [...chars])((c) =>
+        self([...chars, c])(inc(n)),
+      )(charAt(n)(s)),
+  )([])(0);
 
-export const split = splitAndKeep([])(0);
+/** `join("-")(["a", "b"])` is `"a-b"`. */
+export const join = (separator: string): ((xs: readonly string[]) => string) =>
+  uncons(() => "")<string>((x) =>
+    reduce(x)<string>((acc) => (cur) => strConcat(cur)(strConcat(separator)(acc))),
+  );
 
-export const padEnd = (c: string) => (n: number): any => unless(
-  (s: string) => compose2(equals(n))(strLength)(s),
-)(
-  (s: string) => compose2(padEnd(c)(n))(strConcat(c))(s),
-);
+const isPadded =
+  (c: string) =>
+  (n: number) =>
+  (s: string): boolean =>
+    or(isEmptyStr(c))(gte(n)(strLength(s)));
+
+/** Appends `c` until the string is at least `n` long. */
+export const padEnd =
+  (c: string) =>
+  (n: number): ((s: string) => string) =>
+    safeY1<string, string>((self) => unless<string>(isPadded(c)(n))((s) => self(strConcat(c)(s))));
+
+/** Prepends `c` until the string is at least `n` long. */
+export const padStart =
+  (c: string) =>
+  (n: number): ((s: string) => string) =>
+    safeY1<string, string>((self) => unless<string>(isPadded(c)(n))((s) => self(strConcat(s)(c))));

@@ -1,19 +1,27 @@
-import { FnUnary, unless } from './any';
-import { compose2 } from './function';
-import { head, tail } from './xs';
-import { isEmpty } from './xs_misc';
+import { applyTo } from "./function.ts";
+import { safeY1 } from "./safe.ts";
+import type { Step } from "./safe.ts";
+import { uncons } from "./xs.ts";
 
-export type FnVoid = (a: any) => void;
+// The impure corner of the library: these functions are called for their effect.
+
+export type FnVoid = (a: unknown) => void;
 export const log: FnVoid = (a) => {
-  // eslint-disable-next-line no-console
   console.log(a);
 };
 
-export const tap = <T>(f: FnUnary) => (a: T): T => { f(a); return a; };
+/** Runs `f(a)` for its effect and returns `a`. */
+export const tap =
+  <T>(f: (a: T) => unknown) =>
+  (a: T): T => {
+    f(a);
+    return a;
+  };
 
-type FnForEach<T> = (f: FnVoid) => (xs: T[]) => any;
-export const forEach: FnForEach<any> = (f) => (xs) => unless(
-  () => isEmpty(xs),
-)(() => forEach(f)(tail(tap<any[]>(compose2(f)(head))(xs))))(xs);
+/** Runs `f` on each item, in order. Returns an empty list. */
+export const forEach = <T>(f: (a: T) => unknown): ((xs: readonly T[]) => T[]) =>
+  safeY1<readonly T[], T[]>((self) =>
+    uncons<Step<T[]>>(() => [])<T>((x) => (rest) => applyTo(f(x))(() => self(rest))),
+  );
 
-export const logEach = forEach(log);
+export const logEach: (xs: readonly unknown[]) => unknown[] = forEach(log);

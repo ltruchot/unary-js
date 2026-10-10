@@ -1,4 +1,5 @@
-export const toNumber = (a: any): number => Number(a);
-export const toString = (a: any): string => String(a);
-export const toBoolean = (a: any): boolean => Boolean(a);
-export const isArray = (a: any): a is any[] => a instanceof Array;
+export const toNumber: (a: unknown) => number = Number;
+export const toString: (a: unknown) => string = String;
+export const toBoolean: (a: unknown) => boolean = Boolean;
+export const isArray = (a: unknown): a is unknown[] => Array.isArray(a);
+export const isUndefined = (a: unknown): a is undefined => a === undefined;
