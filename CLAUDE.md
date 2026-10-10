@@ -82,14 +82,14 @@ packages/unary-hackerrank/     private; imports the built `unary-js`, as a user 
 
 ## Commands
 
-| Command                                | Does                                                       |
-| -------------------------------------- | ---------------------------------------------------------- |
-| `vp run ready`                         | The whole gate: `vp check`, then per package: build, tests |
-| `vp check --fix`                       | Format, lint and type check (TS, JSON, YAML, Markdown)     |
-| `vp -C packages/lib test`              | The library's tests, on its sources                        |
-| `vp -C packages/lib test <filter>`     | The test files whose path matches                          |
-| `vp -C packages/lib pack`              | Builds `packages/lib/dist`                                 |
-| `vp -C packages/unary-hackerrank test` | The solutions, on `packages/lib/dist` as it was last built |
+| Command                                | Does                                                                                    |
+| -------------------------------------- | --------------------------------------------------------------------------------------- |
+| `vp run ready`                         | The whole gate: versions, the library build, `vp check`, then per package: build, tests |
+| `vp check --fix`                       | Format, lint and type check (TS, JSON, YAML, Markdown)                                  |
+| `vp -C packages/lib test`              | The library's tests, on its sources                                                     |
+| `vp -C packages/lib test <filter>`     | The test files whose path matches                                                       |
+| `vp -C packages/lib pack`              | Builds `packages/lib/dist`                                                              |
+| `vp -C packages/unary-hackerrank test` | The solutions, on `packages/lib/dist` as it was last built                              |
 
 ## Traps with no file trigger
 

@@ -2,11 +2,10 @@
 
 ## Where we stopped
 
-- 2026-10-11, branch `chore/modernize`, committed and pushed: the move to a Vite+ workspace,
-  the typed rewrite of the library (0.1.0), the docs and the Claude Code harness.
-  `vp run ready` is green there.
-- No pull request yet, so CI (`.github/workflows/ci.yml`) has never run: it runs on a pull
-  request and on `main` only. Next: open the pull request and watch its first run.
+- 2026-10-11, branch `chore/modernize`, pushed, pull request #4 open against `main`: the move
+  to a Vite+ workspace, the typed rewrite of the library (0.1.0), the docs, the Claude Code
+  harness, pnpm pinned with mise. CI is green on it.
+- Next, the owner's call: review and merge #4.
 - `unary-js@0.1.0` is **not published**; npm still serves 0.0.7 (CommonJS, 2021).
 
 ## Later
