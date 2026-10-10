@@ -1,89 +1,144 @@
-# Unary JavaScript
+# unary-js
 
-Only unary functions, for the glory of Functional Programming in JS.
+Only unary functions, for the glory of functional programming in JavaScript.
 
+⚠️ An educational project: do not use it in production. ⚠️
 
-⚠️ DO NOT USE IN PROD️ ⚠️
+```ts
+import { compose3, filter, gt0, map, mul, sum } from "unary-js";
 
+const sumOfDoubledPositives = compose3(sum)(map(mul(2)))(filter(gt0));
+
+sumOfDoubledPositives([-1, 2, 3]); // 10
+```
 
 ## Description
 
-Unary JS is an educational attempt to demonstrate the concepts of Functional Programming (FP) in JavaScript.  
-The idea is to stick to **pure unary functions** to do any kind of calculation.
+unary-js is an attempt to demonstrate the concepts of functional programming (FP) in
+JavaScript by sticking to **curried unary functions**: every function of the library takes
+exactly one argument, and returns either a value or the next function.
 
+A handful of primitives each wrap one thing the language provides: an operator (`add` is `+`,
+`equals` is `===`), a property (`length`), a method (`charAt`), or a conversion (`toNumber` is
+`Number`). Everything else is built by combining them, with no statements, operators, or method
+calls: branching is a function (`ifElse`), and so is iteration (`reduce`). The two exceptions
+are the functions called for their effect (`log`, `tap`) and the trampoline described below.
 
-This implies that there is no longer methods, operators or control structures in the language, but only first-class functions, to compose and combine.
+Iterating without loops means recursion, and recursion in JavaScript overflows the stack:
+[proper tail calls](https://en.wikipedia.org/wiki/Tail_call) are
+[part of the ES2015 standard](https://262.ecma-international.org/6.0/#sec-tail-position-calls),
+but JavaScriptCore (Safari) is the only major engine that implements them. V8 (Chrome, Edge,
+Node.js) and SpiderMonkey (Firefox) do not.
 
+The library works around this with stack-safe fixed-point combinators, `safeY1` to `safeY4`:
+a recursive call returns a suspended call instead of growing the stack, and a trampoline runs
+the suspended calls one after the other. That trampoline holds the only loop of the library
+(see [`safe.ts`](packages/lib/src/safe.ts)). The list and string functions are built on these
+combinators, so they do not overflow the stack. They are still slow: each step copies the list,
+so the time grows with the square of its length.
 
-For example, iterations are always performed by recursion (no for / no while) and so on.  
-It's sadly preventing JS from becoming efficient in intensive iteration.  
-Even if [TCO](https://en.wikipedia.org/wiki/Tail_call) is [part of ES6 standards](http://www.ecma-international.org/ecma-262/6.0/#sec-tail-position-calls), only Safari implements it. SpiderMonkey (Mozilla) don't have it [and Chromium V8 dropped it](https://stackoverflow.com/questions/42788139/es6-tail-recursion-optimisation-stack-overflow) therefore Firefox, Chrome, Edge and Node.js cannot ensure a good execution of this library !
+## Packages
 
-We hopefully still can bypass absence of TCO, using a safe Y combinator (@see `tco.ts` file and tests).
+| Package                                                  | What it is                                                        |
+| -------------------------------------------------------- | ----------------------------------------------------------------- |
+| [`packages/lib`](packages/lib)                           | The library, published to npm as `unary-js`: its API.             |
+| [`packages/unary-hackerrank`](packages/unary-hackerrank) | [HackerRank](https://www.hackerrank.com) problems solved with it. |
 
-## But why ?
+## But why?
 
-- be ready for the [V8 implementation](https://www.chromestatus.com/feature/5516876633341952)
-- create a definitive pack of 1001 tiny functions that can handle 99.99% of IT problems
-- make JS more [LISP-like](https://lisp-lang.org/), [Elm-like](https://elm-lang.org/)
-- demonstrate [currying](https://en.wikipedia.org/wiki/Currying)
-- demonstrate the efficiency and simplicity of unit tests in FP
-- discover the [Lambda Calculus](https://www.youtube.com/watch?v=3VQ382QG-y4)
-- discover the [Category Theory](https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/)
-- be playful with FP and grow the FP hidden cult
+- Collect, one day, the 1001 tiny functions that solve most programming problems. There are
+  about a hundred so far.
+- Make JavaScript more [Lisp-like](https://lisp-lang.org/) and more [Elm-like](https://elm-lang.org/).
+- Demonstrate [currying](https://en.wikipedia.org/wiki/Currying).
+- Demonstrate how simple unit tests become with pure functions.
+- Discover [lambda calculus](https://www.youtube.com/watch?v=3VQ382QG-y4).
+- Discover [category theory](https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/).
+- Have fun with FP, and grow its hidden cult.
 
-## Example of use
+Ideas for more examples: [LeetCode](https://leetcode.com/problemset/),
+[Project Euler](https://projecteuler.net/), [Advent of Code](https://adventofcode.com/),
+and [JavaScript Algorithms](https://github.com/trekhleb/javascript-algorithms). None of them
+is started.
 
-- [Hacker Rank](https://www.hackerrank.com) problems, resolved with unary-js [here](https://github.com/ltruchot/unary-js/tree/main/packages/unary-hackerrank)
-- [LeetCode problems](https://leetcode.com/problemset/all/) WIP
-- [Project Euler](https://projecteuler.net/) WIP
-- [Advent of Code](https://adventofcode.com/) WIP
-- [JavaScript Algorithms](https://github.com/trekhleb/javascript-algorithms) WIP
+## Why does this strange syntax work?
 
-## Why this strange syntaxe actually works ?
+Lambda calculus and Turing machines are two models of computation from the 1930s. They look
+nothing alike, yet they are equivalent: whatever one can compute, the other can too.
 
-Lambda Calculus and Turing Machine are two competing concepts covering the same field: automated calculations.
-They are very similar, both prove that with a machine capable of "memory" (state) and "jump instructions" (goto), we can perform any calculation.
+The Turing machine, and the von Neumann architecture that followed, inspired procedural and
+object-oriented languages. A program is a list of statements acting on a shared state:
 
+- create variables;
+- change them with operators, control structures, and methods until the state is the one you want.
 
-With the Turing machine (and the Von Neuman architecture which inspires procedural and OOP languages), your program will be a set of "statements" and shared states:
-- create variables
-- mutate them with operations (+, -...), control structures and methods until the desired state is obtained
+Lambda calculus leads to FP. A program is one expression made of pure functions:
 
+- create functions (input → transformation → output);
+- combine them, apply them to immutable inputs, and get your result.
 
-On the contrary, Lambda Calculus, leads to FP: your program will be a bunch of "expressions" and pure functions.
-- create functions (in terms of Input -> Transformation -> Output)
-- combine them, run them with immutable inputs, get your result
+Most modern languages mix the two approaches and let you code in both styles, often without
+showing where one ends and the other begins.
 
+Because the two models are equivalent, you can replace one approach with the other and get the
+same result from two very different programs: they are two ways of describing the same problem.
 
-Most modern languages ​​are chaotic mixtures of these two approaches, giving us everything we need to code in both styles, often without even showing the boundary.
-
-
-But due to equal Turing's completeness, you can substitute one approach for the other and get the same result with 2 very different programs - these are just different ways of describing the same problem.
-
-
-This package focuses entirely on the Lambda Calculus / FP approach.
+This library sticks to the lambda calculus side.
 
 ## Why TypeScript?
 
-JavaScript is loosely and dynamically typed. This is useful for quick POCs and small / solo projects.
-That said, it's not a perfect solution for creating libraries because the types:
-- helps you find a bug before runtime, even before compile time with a good IDE
-- forces to think of your function "by signature", helping you to define your problem before implementation
-- simplifies teamwork by denoting your intentions
-- provides automatic documentation
-- helps you understand your sets and categories of primitives / objects
-- helps you know when you are in a step of a curry function, or in the final return
+JavaScript is dynamically and weakly typed. That is handy for a quick proof of concept or a
+small solo project, but a library is better off with types. They:
 
-Arguably, these advantages are theoretical, but practically overwhelming, and only shift the problems from runtime to compile-time. I can understand this limit, but here we want to discover and share the 1001 most important functions of Computer Science. It will be a total mess without documentation.
+- find bugs before the code runs, as you type in a good editor;
+- make you think of a function by its signature, so you state the problem before you solve it;
+- show your intentions to your teammates;
+- document the code;
+- tell you where you are in a curried function: one more argument to give, or the final result.
 
-Also, we really want to provide a "signature search" tool, like in Haskell or Rust documentations.
-Indeed, if you know that you want to make your array a string, there will be few functions that will do it, and you will find what you are looking quickly, even without knowing the name "join", for example.
+Types do not remove bugs: they move a class of them from run time to compile time. Here
+they matter for one more reason: a collection of a thousand tiny functions is unusable without
+documentation, and a signature is the shortest one.
 
-In the end, you can consume this library with or without TypeScript, the best of both worlds is available!
+One day, the library should come with a search by signature, like
+[Hoogle](https://hoogle.haskell.org/) for Haskell: if you want to turn a list of strings into
+a string, few functions have that signature, and you find `join` without knowing its name.
+That tool does not exist yet.
+
+The library is written in TypeScript and published as JavaScript with its type declarations:
+you can use it with or without TypeScript.
 
 ## Why not just Ramda?
 
-Unary-js really looks like Ramda: the functions have the same signature, the same name, you can combine them in the same way and they are curried.
+unary-js borrows a lot from [Ramda](https://ramdajs.com/docs/): small functions, curried, with
+the data as the last argument, made to be composed. It is not a drop-in replacement, though:
 
-But Ramda is a production project, aiming to make operators and main functions useful in a [point-free style](https://en.wikipedia.org/wiki/Tacit_programming), without losing performance. In Ramda's implementations, you'll find a ton of "while", "if" and other statements that we don't want to use here. We are not focusing on performance at all, but only on unary functions without statements, from the bottom to the top.
+- Functions are strictly unary: `add(1)(2)`, never `add(1, 2)`.
+- Some names differ: `where` is Ramda's `when`, `t` and `f` are `T` and `F`, and `sub`, `mul`,
+  `div`, and `mod` are `subtract`, `multiply`, `divide`, and `modulo`.
+- The data comes last even for operators: `sub(2)(44)` is `44 - 2` and `gt(0)(n)` is `n > 0`,
+  whereas `R.subtract(44, 2)` and `R.gt(n, 0)` read from left to right.
+- Some signatures differ: `reduce(acc)(f)(xs)` takes the accumulator first, `equals` is `===`
+  and not a deep comparison, and `split` takes no separator.
+
+The goals differ too. Ramda is made for production: its implementations use loops and `if`
+statements to stay fast. unary-js does not care about performance at all. It cares about
+building everything from unary functions, from the bottom up.
+
+## Development
+
+The repository is a [Vite+](https://viteplus.dev) workspace: every command goes through `vp`.
+
+| Command                   | Does                                                           |
+| ------------------------- | -------------------------------------------------------------- |
+| `vp install`              | Installs the dependencies and the Git hooks                    |
+| `vp run ready`            | The whole gate: format, lint, type check, build, and all tests |
+| `vp check --fix`          | Formats and fixes what the linter can fix                      |
+| `vp -C packages/lib test` | The tests of the library                                       |
+| `vp -C packages/lib pack` | Builds the library into `packages/lib/dist`                    |
+
+Working on the code with Claude Code: see [`CLAUDE.md`](CLAUDE.md) and `.claude/skills/`.
+
+## License
+
+[CC BY-NC 4.0](LICENSE): you may share and adapt this work for noncommercial purposes, with
+attribution.
