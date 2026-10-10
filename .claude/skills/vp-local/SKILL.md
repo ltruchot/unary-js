@@ -1,11 +1,12 @@
 ---
 name: vp-local
-description: This repo's Vite+ setup, on top of the shared `vp` skill - the library build (`vp pack`), the `exports` of the npm package, a release, the lockfile and the pnpm of `devEngines`. Use before touching packages/lib/package.json, a vite.config.ts, pnpm-workspace.yaml or pnpm-lock.yaml, and before a release.
+description: This repo's Vite+ setup, on top of the shared `vp` skill - the library build (`vp pack`), the `exports` of the npm package, a release, the pnpm pinned by mise and the lockfile. Use before touching packages/lib/package.json, a vite.config.ts, pnpm-workspace.yaml, pnpm-lock.yaml or mise.toml, and before a release.
 paths:
   - "**/package.json"
   - "**/vite.config.ts"
   - "pnpm-workspace.yaml"
   - "pnpm-lock.yaml"
+  - "mise.toml"
 ---
 
 # Vite+ in unary-js
@@ -15,11 +16,11 @@ no app: `packages/lib` is a library. Ignore those rows; what replaces them is he
 
 ## The workspace
 
-| Package                     | `ready`                       | Notes                                                                |
-| --------------------------- | ----------------------------- | -------------------------------------------------------------------- |
-| root                        | `vp check && vp run -r ready` | format, lint, types, then each package                               |
-| `packages/lib`              | `vp pack && vp test`          | builds `dist/`, tests the sources                                    |
-| `packages/unary-hackerrank` | `vp test`                     | depends on `unary-js` (`workspace:*`): runs after it, on its `dist/` |
+| Package                     | `ready`                                                         | Notes                                                                |
+| --------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------- |
+| root                        | `bash scripts/check-versions.sh && vp check && vp run -r ready` | versions, format, lint, types, then each package                     |
+| `packages/lib`              | `vp pack && vp test`                                            | builds `dist/`, tests the sources                                    |
+| `packages/unary-hackerrank` | `vp test`                                                       | depends on `unary-js` (`workspace:*`): runs after it, on its `dist/` |
 
 ## The library build
 
@@ -48,18 +49,26 @@ Only when the owner asks. Nothing here publishes on its own.
    `node_modules/unary-js`, `import` it from a `.mjs` file, check that nothing is logged.
 5. `vp -C packages/lib pm publish`, then the tag `v<version>` and the push.
 
-## The lockfile
+## pnpm and the lockfile
 
-- `devEngines.packageManager` pins pnpm (root `package.json`). CI (`setup-vp`) installs with
-  that version, and `vp install --frozen-lockfile` there needs a lockfile it wrote.
-- On the owner's machine `vp install` picks up mise's pnpm 10.30.1, first on the `PATH`. Its
-  lockfile fails in CI, and it cannot read the pinned one:
+- The pnpm version is written twice and must be the same twice: `devEngines.packageManager` in
+  the root `package.json` (what CI's `setup-vp` installs) and `pnpm` in `mise.toml` (what this
+  machine runs). `bash scripts/check-versions.sh`, first step of `vp run ready`, compares them.
+- Why mise: on this machine `vp` takes the package manager from the `PATH` (`vp env current`
+  says `Source: system PATH`), and the global mise config puts pnpm 10 there. Without the pin,
+  `vp install` writes a pnpm 10 lockfile that CI refuses, and cannot read the pinned one:
   `ERR_PNPM_BROKEN_LOCKFILE ... expected a single document in the stream, but found more`.
-- After any dependency change, write the lockfile with the pinned version:
-  `vp dlx pnpm@<version of devEngines> install --lockfile-only`.
-- To install from it locally, take mise's pnpm off the `PATH` for that command (zsh):
-  `PATH=$(echo "$PATH" | tr ':' '\n' | grep -v 'mise/installs/pnpm\|mise/shims' | paste -sd:) vp install --frozen-lockfile`.
-  It then prints `using pnpm v12`. Building, testing and `vp run ready` work with the usual `PATH`.
+- In a terminal with `mise activate`, entering the repo is enough: `pnpm --version` prints the
+  pin and `vp install` says `using pnpm v12`.
+- An agent shell does not run `mise activate`: its `PATH` is the one of the session start.
+  If `pnpm --version` there is not the pin, run the install through mise:
+  `mise exec -- vp install` (`--frozen-lockfile` to change nothing). Building, testing and
+  `vp run ready` do not call pnpm and work either way.
+- A clean clone: `mise trust && mise install`, then `vp install`.
+- Bump pnpm: `mise ls-remote pnpm | tail`, take a version 3 days old, write it in `mise.toml`
+  and in `devEngines`, `mise install` (it rewrites `mise.lock`), `mise exec -- vp install`,
+  and commit `mise.toml`, `mise.lock`, `package.json` and `pnpm-lock.yaml` together.
+- Node is not in `mise.toml`: Vite+ downloads the one of `engines.node`.
 
 ## Dependencies
 

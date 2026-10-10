@@ -11,7 +11,7 @@
   },
   "type": "module",
   "scripts": {
-    "ready": "vp check && vp run -r ready",
+    "ready": "bash scripts/check-versions.sh && vp check && vp run -r ready",
     "prepare": "vp config"
   },
   "devDependencies": {

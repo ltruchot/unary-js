@@ -127,6 +127,7 @@ building everything from unary functions, from the bottom up.
 ## Development
 
 The repository is a [Vite+](https://viteplus.dev) workspace: every command goes through `vp`.
+[mise](https://mise.jdx.dev) provides pnpm: run `mise install` once in a clean clone.
 
 | Command                   | Does                                                           |
 | ------------------------- | -------------------------------------------------------------- |

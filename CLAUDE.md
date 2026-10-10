@@ -52,8 +52,10 @@ What is specific to this repo goes in `vp-local`.
 - Node and pnpm are owned by Vite+: every command goes through `vp` (`vp install`, `vp check`,
   `vp test`, `vp run <task>`), never `pnpm`, `npm` or `npx` directly.
 - npm packages must be 3 days old to be installed (`minimumReleaseAge` in `pnpm-workspace.yaml`).
-- `pnpm-lock.yaml` is written by the pnpm of `devEngines`, not by the pnpm 10 this machine's
-  `vp install` picks up → skill `vp-local`, "The lockfile".
+- pnpm comes from mise: `mise.toml` pins the version of `devEngines`
+  (`scripts/check-versions.sh` fails the gate if the two differ). Node is Vite+'s.
+- An agent shell may still have the machine's pnpm 10 first on its `PATH`: if `pnpm --version`
+  is not the pin, install with `mise exec -- vp install` → skill `vp-local`, "pnpm and the lockfile".
 - Local state (scratch, tarballs) goes in `.local/`, gitignored.
 
 ## Architecture
@@ -61,6 +63,7 @@ What is specific to this repo goes in `vp-local`.
 ```
 package.json, vite.config.ts   workspace root: `ready`, fmt/lint/staged for every package
 pnpm-workspace.yaml            packages/*; `catalog:` = shared dependency versions
+mise.toml, mise.lock           the pnpm of this machine, equal to `devEngines` (scripts/check-versions.sh)
 tsconfig.base.json             the strict compiler options every package extends
 packages/lib/                  the npm package `unary-js`
   src/index.ts                 the public API: re-exports every module
