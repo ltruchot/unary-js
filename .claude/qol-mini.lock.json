@@ -1,0 +1,60 @@
+{
+  "skills": {
+    "npm-vulnerability-check": {
+      "answers": {},
+      "files": {
+        "SKILL.md": "90ab6b2cca0ec4c71ea5cb4252ec713c7ea8ac0c17f4e31cd8fb2c6972a26607",
+        "references/supply-chain.md": "e42c31e0b91b3dd1629193dfe501e007188354388cf453e277e44548a468167e"
+      },
+      "path": ".claude/skills/npm-vulnerability-check",
+      "ref": "0.2.1",
+      "renderedHash": "79537ac0b79c7c4d7cc03a4b41012628dd022955130fbfd7ada7d6c16eb78c85",
+      "secrets": [],
+      "sha": "local:4be092530201b57d0ee217ae5c3a7a66fb8797d34e489052263e210f157e13ea",
+      "skillPath": "skills/npm-vulnerability-check",
+      "source": "qol-mini",
+      "sourceType": "local",
+      "templateHash": "20a64c393a98dcca737f88c24043fd4a7b1b8152cc48e919e3804bc2d89d0226"
+    },
+    "qa-pr": {
+      "answers": {
+        "DEFAULT_BRANCH": "main",
+        "GITHUB_REPO": "ltruchot/unary-js",
+        "PROD_URL": "https://www.npmjs.com/package/unary-js"
+      },
+      "files": {
+        "SKILL.md": "bc2d6d353e79ec9acbd3e867bb3dfd9a46bc11bc5a50d815b2acf85a4d646c44",
+        "references/checklist.md": "dec6137d1b5f6035949a0ed995ff0ca107d0e61fd72bb3c3ebcac61d15977991"
+      },
+      "path": ".claude/skills/qa-pr",
+      "ref": "0.2.1",
+      "renderedHash": "820a92a91558a235ace1bbd73ac3c4191bd64d18cafb1e0e8dc1b042222afeaf",
+      "secrets": [],
+      "sha": "local:4be092530201b57d0ee217ae5c3a7a66fb8797d34e489052263e210f157e13ea",
+      "skillPath": "skills/qa-pr",
+      "source": "qol-mini",
+      "sourceType": "local",
+      "templateHash": "203f844b96aff8d53980d9fc83ece653f75ba41006b5e0876bdd1da1b2397d4e"
+    },
+    "vp": {
+      "answers": {
+        "APP_DIR": "packages/lib",
+        "DEV_PORT": "5173"
+      },
+      "files": {
+        "SKILL.md": "8d865b86c8d83e47c651f40c5119f46cc7bc9dc9824fa7b1aec55ed7d5642297",
+        "references/traps.md": "d5e915235a24a4a4f53f44544e428e8a3905f83b4cd315a9b953b32fed76c944"
+      },
+      "path": ".claude/skills/vp",
+      "ref": "0.2.1",
+      "renderedHash": "f2a5d0d092b5ff97de1eae5805274a9fa2d822ff95f844e492f35f58b2893948",
+      "secrets": [],
+      "sha": "local:4be092530201b57d0ee217ae5c3a7a66fb8797d34e489052263e210f157e13ea",
+      "skillPath": "skills/vp",
+      "source": "qol-mini",
+      "sourceType": "local",
+      "templateHash": "6d325df94b70769d372abea49166d557fd0923ca309b1dccfd7926fce278994d"
+    }
+  },
+  "version": 1
+}

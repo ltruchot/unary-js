@@ -1,1 +1,22 @@
+# Build output
+dist/
+.vite/
+*.tgz
+
+# Dependencies
 node_modules/
+
+# Local state (scratch)
+.local/
+*.log
+
+# Claude Code, per machine
+.claude/settings.local.json
+.claude/qol-mini.local.json
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store

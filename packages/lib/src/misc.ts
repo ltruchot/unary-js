@@ -1,60 +1,50 @@
-import { applyTo, compose2 } from './function';
-import { ifElse } from './any';
+import { equals, ifElse, where } from "./any.ts";
+import { and } from "./boolean.ts";
+import { compose2, compose3 } from "./function.ts";
+import { dec, inc } from "./number_misc.ts";
+import { lmap, rmap } from "./pair.ts";
+import { strConcat } from "./string.ts";
+import { split } from "./string_misc.ts";
+import { toNumber } from "./type.ts";
+import { head, length, second } from "./xs.ts";
+import { reduce, reduceIndexed, takeAndKeep } from "./xs_misc.ts";
 
-import { dec, inc, roundFloat } from './number_misc';
-import { lmap, rmap } from './pair';
-import { strConcat } from './string';
-import { padEnd, split } from './string_misc';
-import { toString } from './type';
-import { isUndefined } from './type_misc';
-import {
-  head, second, length, last,
-} from './xs';
-import { eqLastX, reduce, takeAndKeep } from './xs_misc';
+/** The first item plus one (`NaN` for an empty list). */
+export const incHead: (xs: readonly number[]) => number = compose3(inc)(toNumber)(head);
+/** The second item plus one (`NaN` for a list shorter than two). */
+export const incSecond: (xs: readonly number[]) => number = compose3(inc)(toNumber)(second);
+export const lmapInc: <C>(pair: readonly [number, C]) => [number, C] = lmap(inc);
+export const rmapInc: <A>(pair: readonly [A, number]) => [A, number] = rmap(inc);
+export const lastIndex: (xs: readonly unknown[]) => number = compose2(dec)(length);
 
-export const incHead = compose2(inc)(head);
-export const incSecond = compose2(inc)(second);
-export const lmapInc = lmap(inc);
-export const rmapInc = rmap(inc);
-export const lastIndex = compose2(dec)(length);
+/** The first `n` items. */
+export const take =
+  (n: number) =>
+  <T>(xs: readonly T[]): T[] =>
+    takeAndKeep<T>([])(n)(xs);
 
-export const take = applyTo([])(takeAndKeep);
+export const dropLast = <T>(xs: readonly T[]): T[] => take(lastIndex(xs))(xs);
 
-export const dropLast = (xs: any[]) => take(
-  lastIndex(xs),
-)(xs);
+/** List first: the index of the first item strictly equal to `el`, `-1` if there is none. */
+export const indexOf =
+  (xs: readonly unknown[]) =>
+  (el: unknown): number =>
+    reduceIndexed(-1)<unknown>(
+      (found) => (cur) => (i) =>
+        where<number>(() => and(equals(-1)(found))(equals(el)(cur)))(() => i)(found),
+    )(xs);
 
-export const indexOf = (xs: any[]) => (el: any) => ifElse(
-  eqLastX(xs)(el),
-)(() => length(xs) - 1)(compose2(indexOf)(dropLast)(xs))(el);
+type Parts = readonly [done: readonly string[], current: string];
 
-export const splitAtChar = (c: string) => (s: string): string[] => reduce([])(
-  (acc: string[]) => (cur) => {
-    if (cur === c) {
-      return [...acc, ''];
-    }
-    const str = last(acc);
-    if (isUndefined(str)) {
-      return [...acc, cur];
-    }
-    return [...dropLast(acc), str + cur];
-  },
-)(split(s));
-console.log(splitAtChar('.')('12.34'));
+const closeParts = ([done, current]: Parts): string[] => [...done, current];
 
-const splitAtDot = splitAtChar('.');
-
-export const toFixed = (precision: number) => (n: number): string => {
-  const splitted = splitAtDot(toString(roundFloat(precision)(n)));
-  const decimal = second(splitted);
-  return strConcat(
-    padEnd('0')(precision)(isUndefined(decimal) ? '' : decimal),
-  )(
-    strConcat('.')(head(splitted)),
-  );
-};
-console.log(toFixed(1)(231.7888));
-console.log(toFixed(2)(231.7888));
-console.log(toFixed(3)(231.7888));
-console.log(toFixed(5)(231.7888));
-console.log(toFixed(10)(231.7888));
+/** `splitAtChar(".")("12.34")` is `["12", "34"]`. */
+export const splitAtChar = (c: string): ((s: string) => string[]) =>
+  compose3(closeParts)(
+    reduce<Parts>([[], ""])<string>(([done, current]) =>
+      ifElse<string>(equals(c))((): Parts => [[...done, current], ""])((char): Parts => [
+        done,
+        strConcat(char)(current),
+      ]),
+    ),
+  )(split);

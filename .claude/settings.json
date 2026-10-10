@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(vp check)",
+      "Bash(vp check --fix)",
+      "Bash(vp install)",
+      "Bash(mise exec -- vp install)",
+      "Bash(mise exec -- vp install --frozen-lockfile)",
+      "Bash(bash scripts/check-versions.sh)",
+      "Bash(vp run ready)",
+      "Bash(vp run *#ready)",
+      "Bash(vp test)",
+      "Bash(vp test *)",
+      "Bash(vp -C packages/lib test)",
+      "Bash(vp -C packages/lib test *)",
+      "Bash(vp -C packages/lib pack)",
+      "Bash(vp -C packages/unary-hackerrank test)",
+      "Bash(vp -C packages/unary-hackerrank test *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)"
+    ]
+  }
+}

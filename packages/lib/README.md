@@ -1,89 +1,111 @@
-# Unary JavaScript
+# unary-js
 
-Only unary functions, for the glory of Functional Programming in JS.
+Only unary functions, for the glory of functional programming in JavaScript.
 
+⚠️ An educational project: do not use it in production. ⚠️
 
-⚠️ DO NOT USE IN PROD️ ⚠️
+Every function takes exactly one argument and returns either a value or the next function.
+The why and the how are in the [repository's README](https://github.com/ltruchot/unary-js#readme).
 
+## Install
 
-## Description
+```sh
+npm install unary-js
+```
 
-Unary JS is an educational attempt to demonstrate the concepts of Functional Programming (FP) in JavaScript.  
-The idea is to stick to **pure unary functions** to do any kind of calculation.
+The package is ESM only (`import`, not `require`), ships its TypeScript declarations, and has no
+dependencies. It needs Node.js 22.18 or later, or a bundler.
 
+## Usage
 
-This implies that there is no longer any operator or control structure in the language, but only first-class functions, to compose and combine.
+```ts
+import { compose3, filter, gt0, map, mul, sum } from "unary-js";
 
+const sumOfDoubledPositives = compose3(sum)(map(mul(2)))(filter(gt0));
 
-For example, iterations are always performed by recursion (no for / no while) and so on.  
-It's sadly preventing JS from becoming efficient in intensive iteration.  
-Even if [TCO](https://en.wikipedia.org/wiki/Tail_call) is [part of ES6 standards](http://www.ecma-international.org/ecma-262/6.0/#sec-tail-position-calls), only Safari implements it. SpiderMonkey (Mozilla) don't have it [and Chromium V8 dropped it](https://stackoverflow.com/questions/42788139/es6-tail-recursion-optimisation-stack-overflow) therefore Firefox, Chrome, Edge and Node.js cannot ensure a good execution of this library !
+sumOfDoubledPositives([-1, 2, 3]); // 10
+```
 
-We hopefully still can bypass absence of TCO, using a safe Y combinator (@see `tco.ts` file and tests).
+One argument at a time, the data last. For an operator, that means the first argument is the
+right-hand operand:
 
-## But why ?
+```ts
+import { add, gt, ifElse, sub } from "unary-js";
 
-- be ready for the [V8 implementation](https://www.chromestatus.com/feature/5516876633341952)
-- create a definitive pack of 1001 tiny functions that can handle 99.99% of IT problems
-- make JS more [LISP-like](https://lisp-lang.org/), [Elm-like](https://elm-lang.org/)
-- demonstrate [currying](https://en.wikipedia.org/wiki/Currying)
-- demonstrate the efficiency and simplicity of unit tests in FP
-- discover the [Lambda Calculus](https://www.youtube.com/watch?v=3VQ382QG-y4)
-- discover the [Category Theory](https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/)
-- be playful with FP and grow the FP hidden cult
+add(1)(2); // 3
+sub(2)(44); // 42, as in 44 - 2
+gt(0)(5); // true, as in 5 > 0
 
-## Example of use
+const describeSign = ifElse(gt(0))(() => "positive")(() => "not positive");
+describeSign(5); // "positive"
+describeSign(-5); // "not positive"
+```
 
-- [Hacker Rank](https://www.hackerrank.com) problems, resolved with unary-js [here](https://github.com/ltruchot/unary-js/tree/main/packages/unary-hackerrank)
-- [LeetCode problems](https://leetcode.com/problemset/all/) WIP
-- [Project Euler](https://projecteuler.net/) WIP
-- [Advent of Code](https://adventofcode.com/) WIP
-- [JavaScript Algorithms](https://github.com/trekhleb/javascript-algorithms) WIP
+Lists and strings:
 
-## Why this strange syntaxe actually works ?
+```ts
+import { add, join, map, reduce, toFixed, toString, zip } from "unary-js";
 
-Lambda Calculus and Turing Machine are two competing concepts covering the same field: automated calculations.
-They are very similar, both prove that with a machine capable of "memory" (state) and "jump instructions" (goto), we can perform any calculation.
+reduce(0)(add)([1, 2, 3]); // 6
+zip(["a", "b"])([1, 2]); // [[1, "a"], [2, "b"]]
+join("-")(map(toString)([1, 2, 3])); // "1-2-3"
+toFixed(2)(231.7888); // "231.79"
+```
 
+Stack-safe recursion: `safeY2` gives a recursive function of two curried arguments a `self` to
+call instead of its own name, and runs it without growing the stack.
 
-With the Turing machine (and the Von Neuman architecture which inspires procedural and OOP languages), your program will be a set of "statements" and shared states:
-- create variables
-- mutate them with operations (+, -...), control structures and methods until the desired state is obtained
+```ts
+import { safeY2 } from "unary-js";
 
+const factorial = safeY2<number, number, number>(
+  (self) => (n) => (acc) => (n === 0 ? acc : self(n - 1)(n * acc)),
+);
 
-On the contrary, Lambda Calculus, leads to FP: your program will be a bunch of "expressions" and pure functions.
-- create functions (in terms of Input -> Transformation -> Output)
-- combine them, run them with immutable inputs, get your result
+factorial(5)(1); // 120
+factorial(100_000)(1); // Infinity, and no stack overflow
+```
 
+## API
 
-Most modern languages ​​are chaotic mixtures of these two approaches, giving us everything we need to code in both styles, often without even showing the boundary.
+Each function is typed: your editor shows its signature. The functions, by module:
 
+| Module        | Functions                                                                                                                                 |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `any`         | `identity`, `equals`, `ifElse`, `unless`, `where`                                                                                         |
+| `boolean`     | `t`, `f`, `not`, `and`, `nand`, `or`, `nor`, `without`, `xor`, `xor2`, `xor3`                                                             |
+| `function`    | `compose2`, `compose3`, `applyTo`                                                                                                         |
+| `number`      | `negate`, `add`, `sub`, `mul`, `div`, `pow`, `mod`, `gt`, `gte`, `lt`, `lte`, `isFinite`, `parseIntWithRadix`                             |
+| `number_misc` | `inc`, `dec`, `eq0`, `lt0`, `gt0`, `isMultipleOf`, `abs`, `dropDecimal`, `round`, `roundFloat`                                            |
+| `format_misc` | `toFixed`                                                                                                                                 |
+| `pair`        | `left`, `right`, `bmap`, `lmap`, `rmap`                                                                                                   |
+| `pair_misc`   | `isBalancedPair`, `isLeftGreater`                                                                                                         |
+| `string`      | `strConcat`, `charAt`                                                                                                                     |
+| `string_misc` | `strLength`, `split`, `join`, `padEnd`, `padStart`                                                                                        |
+| `type`        | `toNumber`, `toString`, `toBoolean`, `isArray`, `isUndefined`                                                                             |
+| `xs`          | `length`, `head`, `second`, `last`, `tail`, `isNonEmpty`, `uncons`, `matchNested`                                                         |
+| `xs_misc`     | `isEmpty`, `reduce`, `reduceIndexed`, `reduceIndexedAndKeep`, `map`, `filter`, `zip`, `slice`, `flatten`, `takeAndKeep`, `eqLastX`, `sum` |
+| `misc`        | `incHead`, `incSecond`, `lmapInc`, `rmapInc`, `lastIndex`, `take`, `dropLast`, `indexOf`, `splitAtChar`                                   |
+| `effect_misc` | `log`, `tap`, `forEach`, `logEach`                                                                                                        |
+| `safe`        | `safeY1`, `safeY2`, `safeY3`, `safeY4`, `Bounce`                                                                                          |
 
-But due to equal Turing's completeness, you can substitute one approach for the other and get the same result with 2 very different programs - these are just different ways of describing the same problem.
+Everything is exported from the package root. `xs` means "a list of x". A module without
+`_misc` holds primitives, each one wrapping an operator, a property, or a method of the language;
+a `_misc` module is built from the other functions only.
 
+Worth knowing:
 
-This package focuses entirely on the Lambda Calculus / FP approach.
+- `where` is what Ramda calls `when`.
+- `equals` is `===`: two different arrays with the same items are not equal.
+- `round` rounds halves away from zero: `round(-1.5)` is `-2`, whereas `Math.round(-1.5)` is `-1`.
+- `zip(xs)(ys)` puts the item of `ys` first in each pair, and stops at the end of the shorter list.
+- `forEach` returns an empty list.
+- `head`, `second`, and `last` return `undefined` when there is no such item.
+- `toFixed` rounds as `round` does, so on a tie it may differ from `Number.prototype.toFixed`.
+- The list and string functions do not overflow the stack, but they copy the list at each step:
+  their time grows with the square of its length.
 
-## Why TypeScript?
+## License
 
-JavaScript is loosely and dynamically typed. This is useful for quick POCs and small / solo projects.
-That said, it's not a perfect solution for creating libraries because the types:
-- helps you find a bug before runtime, even before compile time with a good IDE
-- forces to think of your function "by signature", helping you to define your problem before implementation
-- simplifies teamwork by denoting your intentions
-- provides automatic documentation
-- helps you understand your sets and categories of primitives / objects
-- helps you know when you are in a step of a curry function, or in the final return
-
-Arguably, these advantages are theoretical, but practically overwhelming, and only shift the problems from runtime to compile-time. I can understand this limit, but here we want to discover and share the 1001 most important functions of Computer Science. It will be a total mess without documentation.
-
-Also, we really want to provide a "signature search" tool, like in Haskell or Rust documentations.
-Indeed, if you know that you want to make your array a string, there will be few functions that will do it, and you will find what you are looking quickly, even without knowing the name "join", for example.
-
-In the end, you can consume this library with or without TypeScript, the best of both worlds is available!
-
-## Why not just Ramda?
-
-Unary-js really looks like Ramda: the functions have the same signature, the same name, you can combine them in the same way and they are curried.
-
-But Ramda is a production project, aiming to make operators and main functions useful in a [point-free style](https://en.wikipedia.org/wiki/Tacit_programming), without losing performance. In Ramda's implementations, you'll find a ton of "while", "if" and other statements that we don't want to use here. We are not focusing on performance at all, but only on unary functions without statements, from the bottom to the top.
+[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/): you may share and adapt this
+work for noncommercial purposes, with attribution.

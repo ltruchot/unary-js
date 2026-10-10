@@ -1,21 +1,28 @@
-import {
-  FnAppend1, FnTransform2, FnTransform4,
-} from './generic';
+/** Returns its argument. */
+export const identity = <T>(a: T): T => a;
 
-export type FnUnary = FnAppend1<any>;
+/** Strict equality (`===`), data last: `equals(a)(b)` is `b === a`. */
+export const equals =
+  <T>(a: T) =>
+  (b: T): boolean =>
+    b === a;
 
-export const identity: FnUnary = (a) => a;
+/** `ifElse(cond)(f)(g)(a)` is `f(a)` when `cond(a)` holds, `g(a)` otherwise. */
+export const ifElse =
+  <A>(cond: (a: A) => boolean) =>
+  <B>(f: (a: A) => B) =>
+  <C>(g: (a: A) => C) =>
+  (a: A): B | C =>
+    cond(a) ? f(a) : g(a);
 
-export const equals: FnTransform2<any, boolean> = (a) => (b) => b === a;
+/** `unless(cond)(f)(a)` is `a` when `cond(a)` holds, `f(a)` otherwise. */
+export const unless =
+  <A>(cond: (a: A) => boolean) =>
+  <B>(f: (a: A) => B): ((a: A) => A | B) =>
+    ifElse(cond)(identity<A>)(f);
 
-export const ifElse: FnTransform4<any, any> = (
-  cond: FnUnary,
-) => (f: FnUnary) => (g: FnUnary) => (a: any) => (cond(a) ? f(a) : g(a));
-
-export const unless: FnTransform4<any, any> = (
-  cond: FnUnary,
-) => (f: FnUnary) => ifElse(cond)(identity)(f);
-
-export const where: FnTransform4<any, any> = (
-  cond: FnUnary,
-) => (f: FnUnary) => ifElse(cond)(f)(identity);
+/** `where(cond)(f)(a)` is `f(a)` when `cond(a)` holds, `a` otherwise (Ramda calls it `when`). */
+export const where =
+  <A>(cond: (a: A) => boolean) =>
+  <B>(f: (a: A) => B): ((a: A) => A | B) =>
+    ifElse(cond)(f)(identity<A>);

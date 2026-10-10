@@ -1,0 +1,10 @@
+# pnpm only. This machine's `vp` takes the package manager from the PATH
+# (`vp env off pm`), and the global mise config puts pnpm 10 there: this pin
+# makes it the pnpm of `devEngines` (package.json), the one CI installs.
+# The two versions must be the same: scripts/check-versions.sh.
+# Node is owned by Vite+ (`engines.node`): never list it here.
+[settings]
+lockfile = true
+
+[tools]
+pnpm = "12.10.1"
